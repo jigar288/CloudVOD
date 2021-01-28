@@ -1,31 +1,33 @@
 // Place azure related hard-coded configurations here
+import dotenv from 'dotenv'
+dotenv.config()
 
 export interface AzureAccountConfig {
-    AadClientId: string,
-    AadSecret: string,
-    AadTenantDomain: string,
-    AadTenantId: string,
-    AccountName: string,
-    Location: string,
-    ResourceGroup: string,
-    SubscriptionId: string,
-    StorageConnection: string,
-    ArmAadAudience: string,
-    ArmEndpoint: string,
-    activeDirectoryEndpointUrl: string,
+    AadClientId: string
+    AadSecret: string
+    AadTenantDomain: string
+    AadTenantId: string
+    AccountName: string
+    Location: string
+    ResourceGroup: string
+    SubscriptionId: string
+    StorageConnection: string
+    ArmAadAudience: string
+    ArmEndpoint: string
+    activeDirectoryEndpointUrl: string
 }
 
 // this object is necessary for silencing typescript type restriction
-const azureAccountConfig : AzureAccountConfig = {
-    AadClientId: process.env.AadClientId || 'placeholder',
-    AadSecret: process.env.AadSecret || 'placeholder',
-    AadTenantDomain: process.env.AadTenantDomain || 'placeholder',
-    AadTenantId: process.env.AadTenantId || 'placeholder',
-    AccountName: process.env.AccountName || 'placeholder',
-    Location: process.env.Location || 'placeholder',
-    ResourceGroup: process.env.ResourceGroup || 'placeholder',
-    SubscriptionId: process.env.SubscriptionId || 'placeholder',
-    StorageConnection: process.env.AZURE_STORAGE_CONNECTION_STRING || 'placeholder',
+const azureAccountConfig: AzureAccountConfig = {
+    AadClientId: process.env.AadClientId || '',
+    AadSecret: process.env.AadSecret || '',
+    AadTenantDomain: process.env.AadTenantDomain || '',
+    AadTenantId: process.env.AadTenantId || '',
+    AccountName: process.env.AccountName || '',
+    Location: process.env.Location || 'North Central US',
+    ResourceGroup: process.env.ResourceGroup || '',
+    SubscriptionId: process.env.SubscriptionId || '',
+    StorageConnection: process.env.StorageConnection || '',
     ArmAadAudience: 'https://management.core.windows.net/',
     ArmEndpoint: 'https://management.azure.com/',
     activeDirectoryEndpointUrl: 'https://login.microsoftonline.com/',

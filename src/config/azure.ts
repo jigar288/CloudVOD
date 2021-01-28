@@ -9,7 +9,7 @@ export interface AzureAccountConfig {
     Location: string,
     ResourceGroup: string,
     SubscriptionId: string,
-    AZURE_STORAGE_CONNECTION_STRING: string,
+    StorageConnection: string,
     ArmAadAudience: string,
     ArmEndpoint: string,
     activeDirectoryEndpointUrl: string,
@@ -25,11 +25,10 @@ const azureAccountConfig : AzureAccountConfig = {
     Location: process.env.Location || 'placeholder',
     ResourceGroup: process.env.ResourceGroup || 'placeholder',
     SubscriptionId: process.env.SubscriptionId || 'placeholder',
-    AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING || 'placeholder',
+    StorageConnection: process.env.AZURE_STORAGE_CONNECTION_STRING || 'placeholder',
     ArmAadAudience: 'https://management.core.windows.net/',
     ArmEndpoint: 'https://management.azure.com/',
     activeDirectoryEndpointUrl: 'https://login.microsoftonline.com/',
 }
 
-export default azureAccountConfig;
-
+export default azureAccountConfig

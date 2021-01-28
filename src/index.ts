@@ -16,6 +16,7 @@ import { ListContainerSasInput } from '@azure/arm-mediaservices/src/models/index
 
 async function uploadFileToStorageContainer(containerSasURL: string){
 
+    //TODO: replace w/ url parser library
     const start = containerSasURL.indexOf('/', 10)
     const end = containerSasURL.indexOf('?');
     const containerName = containerSasURL.substring(start + 1, end)

@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
+const { urlToHttpOptions } = require('url'); //To parse URL
 
 // import * as msRest from "@azure/ms-rest-js";
 // import * as msRestAzure from "@azure/ms-rest-azure-js";
@@ -11,12 +12,10 @@ import { BlobServiceClient } from '@azure/storage-blob'
 import { ListContainerSasInput } from '@azure/arm-mediaservices/src/models/index'
 
 //TODO: separation of concerns: project layers, helper methods, classes
-
+// Upload actual file to Azure url using SasURL
 async function uploadFileToStorageContainer(containerSasURL: string) {
-    //TODO: replace w/ url parser library
-    const start = containerSasURL.indexOf('/', 10)
-    const end = containerSasURL.indexOf('?')
-    const containerName = containerSasURL.substring(start + 1, end)
+    
+    const containerName = urlToHttpOptions(containerSasURL).pathname.substring(1)
 
     //TODO: after basic implementation use file upload stream method uploadStream() when receiving data from real client
     const filePathForTesting = '/home/codespace/workspace/CloudVOD/resources/test.mov'
@@ -30,6 +29,7 @@ async function uploadFileToStorageContainer(containerSasURL: string) {
     console.log(uploadResult._response)
 }
 
+// Prepare to upload the actual file to Azure by search for its sasURL
 async function uploadFileToAsset(client: AzureMediaServices, assetName: string) {
     const currentDate = new Date()
     currentDate.setHours(currentDate.getHours() + 2)
@@ -52,6 +52,7 @@ async function uploadFileToAsset(client: AzureMediaServices, assetName: string) 
     })
 }
 
+// Create asset object on Azure
 async function createAsset(fileName: string, client: AzureMediaServices) {
     const assetName = `${fileName}-asset`
     try {
@@ -65,10 +66,13 @@ async function createAsset(fileName: string, client: AzureMediaServices) {
     return assetName
 }
 
+// Create media service client with auth credential
 function createMediaServiceClient(authResponse: msRestNodeAuth.AuthResponse) {
     return new AzureMediaServices(authResponse.credentials, azureAccountConfig.SubscriptionId)
 }
 
+// Process a file that will eventually upload to storage container
+// Workflow processFile() => uploadFileToAsset() => uploadFileToStorageContainer()
 //! FIXME: use the actual name of the file & pass in other details
 function processFile(fileName: string) {
     //authenticating

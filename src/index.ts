@@ -1,5 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
+const { urlToHttpOptions } = require('url'); //To parse URL
 
 // import * as msRest from "@azure/ms-rest-js";
 // import * as msRestAzure from "@azure/ms-rest-azure-js";
@@ -13,10 +14,12 @@ import { ListContainerSasInput } from '@azure/arm-mediaservices/src/models/index
 //TODO: separation of concerns: project layers, helper methods, classes
 
 async function uploadFileToStorageContainer(containerSasURL: string) {
-    //TODO: replace w/ url parser library
-    const start = containerSasURL.indexOf('/', 10)
-    const end = containerSasURL.indexOf('?')
-    const containerName = containerSasURL.substring(start + 1, end)
+    
+    //DONE: replace w/ url parser library
+    // const start = containerSasURL.indexOf('/', 10)
+    // const end = containerSasURL.indexOf('?')
+    // const containerName = containerSasURL.substring(start + 1, end)
+    const containerName = urlToHttpOptions(containerSasURL).pathname.substring(1)
 
     //TODO: after basic implementation use file upload stream method uploadStream() when receiving data from real client
     const filePathForTesting = '/home/codespace/workspace/CloudVOD/resources/test.mov'

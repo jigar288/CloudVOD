@@ -4,77 +4,93 @@ import { Controller } from './controllers'
 import { Server } from 'http'
 import { Middleware } from './types'
 import { Sanity } from './controllers/Sanity'
-import busboy from 'connect-busboy'
-import { loginWithServicePrincipalSecretWithAuthResponse } from '@azure/ms-rest-nodeauth'
 import { AzureMediaServices } from '@azure/arm-mediaservices'
-import azureAccountConfig from './config/azure'
+import { loginWithServicePrincipalSecretWithAuthResponse } from '@azure/ms-rest-nodeauth'
+import { AzureAccountConfig } from 'types'
 import { exit } from 'process'
-
+import { MediaService } from './controllers/MediaService'
+import multer from 'multer'
 export default class App {
+    // # represents private variables - EC2020
     #app: express.Application
     #basePath: string
     #serviceName: string
     #port: number
-    #client?: AzureMediaServices
+    #azureConfig: AzureAccountConfig
+
+    #server?: Server
+    #mediaServicesClient?: AzureMediaServices
 
     get app(): express.Application {
         return this.#app
     }
 
-    constructor(port: number, basePath: string, serviceName: string) {
+    constructor(port: number, basePath: string, serviceName: string, azureConfig: AzureAccountConfig) {
         this.#app = express()
         this.#port = port
         this.#basePath = basePath
         this.#serviceName = serviceName
+        this.#azureConfig = azureConfig
+
+        this.#app.options('*', cors)
     }
 
-    private bindMiddlewares = (middlewares?: Middleware[]) => {
-        if (middlewares && middlewares.length > 0) middlewares.forEach((middle) => this.#app.use(middle))
-    }
+    public start = async (): Promise<void> => {
+        await this.initialize()
 
-    private bindControllers = (controllers?: Controller[]) => {
-        if (controllers && controllers.length > 0)
-            controllers.forEach((controller) => {
-                controller.bindRoutes()
-                this.#app.use(this.#basePath + controller.path, controller.router)
-            })
-    }
-    public listen = async (): Promise<Server> => {
-        try {
-            const response = await loginWithServicePrincipalSecretWithAuthResponse(azureAccountConfig.AadClientId, azureAccountConfig.AadSecret, azureAccountConfig.AadTenantId)
-            this.#client = new AzureMediaServices(response.credentials, azureAccountConfig.SubscriptionId)
-        } catch (err) {
-            console.error('❌ Unable to authenticate with Azure')
-            exit(1)
-        }
-
-        await this.init()
-
-        return this.#app.listen(this.#port, '0.0.0.0', () => {
+        this.#server = this.#app.listen(this.#port, () => {
             console.log(`${this.#serviceName} has started on port ${this.#port}.`)
         })
     }
 
-    private async init() {
-        this.#app.options('*', cors)
-        const middlewares = [express.json(), busboy({ immediate: true }), express.urlencoded({ extended: true })]
+    public stop = async (): Promise<void> => {
+        this.#server?.close()
+    }
+
+    private async initialize(): Promise<void> {
+        await this.initializeServices()
 
         // * Bind middlewares
+        // TODO: Verify that `busyboy` is compatible with other middlewares
+        const middlewares = [express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload') ]
         this.bindMiddlewares(middlewares)
 
-        try {
-            const response = await loginWithServicePrincipalSecretWithAuthResponse(azureAccountConfig.AadClientId, azureAccountConfig.AadSecret, azureAccountConfig.AadTenantId)
-            this.#client = new AzureMediaServices(response.credentials, azureAccountConfig.SubscriptionId)
+        // * Create and controllers
+        const sanityCrl = new Sanity('/')
 
-            console.log('🌟 Connected with Azure Media Server')
+        let mediaService;
+        if(this.#mediaServicesClient)
+            mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
+
+        // * Bind all the controllers
+        this.bindControllers([mediaService, sanityCrl])
+    }
+
+    private async initializeServices(): Promise<void> {
+        // * Connect with Azure Media Service and create the client
+        const { AadClientId, AadSecret, AadTenantId, SubscriptionId, AadTenantDomain } = this.#azureConfig
+        try {
+            const response = await loginWithServicePrincipalSecretWithAuthResponse(AadClientId, AadSecret, AadTenantId)
+            this.#mediaServicesClient = new AzureMediaServices(response.credentials, SubscriptionId)
+            console.log('🌟 Connected with Azure Media Service')
         } catch (err) {
-            console.error('❌ Unable to authenticate with Azure')
+            console.error(`❌ Unable to authenticate with Azure for tenant: ${AadTenantDomain}`)
             exit(1)
         }
 
-        // * Create controllers
-        const sanityCrl = new Sanity('/')
+        // * Other clients and connections here
+    }
 
-        this.bindControllers([sanityCrl])
+    // * Calls `app.use` on each middleware
+    private bindMiddlewares = (middlewares: Middleware[]) => {
+        middlewares.forEach((middle) => this.#app.use(middle))
+    }
+
+    // * Bind the routes for each controller and calls `app.use` for each controller router
+    private bindControllers = (controllers: Controller[]) => {
+        controllers.forEach((controller) => {
+            controller.bindRoutes()
+            this.#app.use(this.#basePath + controller.path, controller.router)
+        })
     }
 }

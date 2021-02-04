@@ -2,48 +2,9 @@
 import { Request, Response, Router } from 'express'
 import { Middleware } from '../types'
 
-// export const Authenticated = (_target: Controller, _propertyKey: string, descriptor: PropertyDescriptor) => {
-//     const originalMethod = descriptor.value
-//     descriptor.value = function () {
-//         const args = arguments
-//         const req: Request = args[0]
-//         const res: Response = args[1]
-
-//         if (!req.user) {
-//             if (process.env.NODE_ENV == 'production') res.status(404).send('Specified path not found.')
-//             else res.status(401).send('This URL requires authentication.')
-//         } else originalMethod.apply(this, args)
-//     }
-//     return descriptor
-// }
-
-// export const NeedsSharedSecret = (target: Controller, propertyKey: string, descriptor: PropertyDescriptor) => {
-//     const originalMethod = descriptor.value
-//     descriptor.value = function () {
-//         const args = arguments
-//         const req: Request = args[0]
-//         const res: Response = args[1]
-//         if (!req.body.shared_secret || req.body.shared_secret != (process.env.SHARED_SECRET || 'PICSWEEPER')) {
-//             if (process.env.NODE_ENV == 'production') res.status(404).send('Specified path not found.')
-//             else res.status(401).send('This URL requires the shared secret.')
-//         } else originalMethod.apply(this, args)
-//     }
-// }
-
-// export const DevelopmentOnly = (target: Controller, propertyKey: string, descriptor: PropertyDescriptor) => {
-//     const originalMethod = descriptor.value
-//     descriptor.value = function () {
-//         const args = arguments
-//         const res: Response = args[1]
-//         if (process.env.NODE_ENV == 'production') {
-//             res.status(404).send('Specified path not found.')
-//         } else originalMethod.apply(this, args)
-//     }
-// }
-
 const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]) => {
     return (target: Controller, _propertyKey: string, descriptor: PropertyDescriptor) => {
-        if (Object.getOwnPropertyDescriptor(target, 'routes') == null) target.routes = []
+        if (Object.getOwnPropertyDescriptor(target, 'routes') == null || target.routes === undefined) target.routes = []
         target.routes.push({
             path,
             method,
@@ -85,20 +46,19 @@ export abstract class Controller {
     public router: Router
     public path: string
 
-    public routes: Route[]
+    public routes?: Route[]
 
     constructor(path: string) {
         this.path = path
         this.router = Router()
-        this.routes = []
     }
 
-    public static jsonResponse(response: Response, code: number, message: string) {
+    public static jsonResponse(response: Response, code: number, message: string): Response {
         return response.status(code).json({ message })
     }
 
-    public bindRoutes() {
-        this.routes.forEach((route) => {
+    public bindRoutes(): void {
+        this.routes?.forEach((route) => {
             switch (route.method) {
                 case 'get':
                     this.router.get(route.path, ...route.middlewares, route.handler.bind(this))
@@ -119,7 +79,7 @@ export abstract class Controller {
         })
     }
 
-    public ok<T>(res: Response, data?: T) {
+    public ok<T>(res: Response, data?: T): Response {
         if (data) {
             res.type('application/json')
             return res.status(200).json(data)
@@ -127,47 +87,47 @@ export abstract class Controller {
             return res.sendStatus(200)
         }
     }
-    public created(response: Response) {
+    public created(response: Response): void {
         response.sendStatus(201)
     }
 
-    public accepted(response: Response) {
+    public accepted(response: Response): void {
         response.sendStatus(202)
     }
 
-    public clientError(response: Response, message?: string) {
+    public clientError(response: Response, message?: string): void {
         Controller.jsonResponse(response, 400, message ? message : 'Unauthorized')
     }
 
-    public unauthorized(response: Response, message?: string) {
+    public unauthorized(response: Response, message?: string): void {
         Controller.jsonResponse(response, 401, message ? message : 'Unauthorized')
     }
 
-    public paymentRequired(response: Response, message?: string) {
+    public paymentRequired(response: Response, message?: string): void {
         Controller.jsonResponse(response, 402, message ? message : 'Payment required')
     }
 
-    public forbidden(response: Response, message?: string) {
+    public forbidden(response: Response, message?: string): void {
         Controller.jsonResponse(response, 403, message ? message : 'Forbidden')
     }
 
-    public notFound(response: Response, message?: string) {
+    public notFound(response: Response, message?: string): void {
         Controller.jsonResponse(response, 404, message ? message : 'Not found')
     }
 
-    public conflict(response: Response, message?: string) {
+    public conflict(response: Response, message?: string): void {
         Controller.jsonResponse(response, 409, message ? message : 'Conflict')
     }
 
-    public tooMany(response: Response, message?: string) {
+    public tooMany(response: Response, message?: string): void {
         Controller.jsonResponse(response, 429, message ? message : 'Too many requests')
     }
 
-    public notImplemented(response: Response, message?: string) {
+    public notImplemented(response: Response, message?: string): void {
         Controller.jsonResponse(response, 501, message ? message : 'Not Implemented')
     }
 
-    public fail(response: Response, error: Error | string) {
+    public fail(response: Response, error: Error | string): Response {
         console.log(error)
         return response.status(500).json({
             message: error.toString(),

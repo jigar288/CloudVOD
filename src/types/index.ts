@@ -23,3 +23,8 @@ export type FileInfo = {
     fileName: string;
     fileReadStream: Readable
 }
+
+export enum AssetType {
+    Input,
+    Output
+}

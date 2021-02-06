@@ -4,6 +4,7 @@ import { AzureMediaServices } from '@azure/arm-mediaservices'
 import { Request, Response } from 'express'
 import { Controller, Get, Post } from '.'
 import { AzureAccountConfig, FileInfo } from 'types'
+import { AssetType } from '../types/index'
 import { BlobServiceClient, BlobUploadCommonResponse } from '@azure/storage-blob'
 import { AssetsListContainerSasResponse, ListContainerSasInput } from '@azure/arm-mediaservices/esm/models'
 import { AssetContainerPermission } from '@azure/arm-mediaservices/src/models/index'
@@ -75,8 +76,18 @@ export class MediaService extends Controller {
         return false;
     }
 
-    private async createAsset(fileName: string): Promise<string | undefined> {
-        const assetName = `${fileName}-input-asset`
+    private async createAsset(fileName: string, assetType: AssetType): Promise<string | undefined> {
+        
+        let assetName: string;
+
+        if(assetType == AssetType.Input){
+            assetName = `${fileName}-input-asset`
+        }else if(assetType == AssetType.Output){
+            assetName = `${fileName}-output-asset`
+        }else{
+            return undefined
+        }
+
         try {
             const { ResourceGroup, AccountName } = this.#azureConfig
             const result = await this.#mediaServicesClient.assets.createOrUpdate(ResourceGroup, AccountName, assetName, {})
@@ -91,7 +102,7 @@ export class MediaService extends Controller {
     // todo: pass in other parameters as necessary
     private async processFile(fileInfo: FileInfo): Promise<boolean> {
         let fileProcessingResult = false;
-        const assetName = await this.createAsset(fileInfo.fileName)
+        const assetName = await this.createAsset(fileInfo.fileName, AssetType.Input)
 
         if(assetName)
             fileProcessingResult = await this.uploadFileToAsset(assetName, fileInfo)
@@ -113,8 +124,12 @@ export class MediaService extends Controller {
         
         const fileProcessingResult = await this.processFile(fileInfo);
         if(fileProcessingResult == true){
+            const outputAssetName = await this.createAsset(fileInfo.fileName, AssetType.Output)
             // todo: send req to start encoding file process
-            res.status(200).send('Successfully uploaded file. File encoding process for streaming will will start soon.')
+
+
+
+            res.status(200).send('Successfully uploaded file. File encoding process for streaming will start soon.')
         }else{
             res.status(500).send('Error uploading file. Its must be on our end. Please try again.')
         }        

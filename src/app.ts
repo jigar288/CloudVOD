@@ -47,7 +47,6 @@ export default class App {
         this.#server?.close()
     }
 
-    // Initialize everything before app starts
     private async initialize(): Promise<void> {
         await this.initializeServices()
 
@@ -62,10 +61,6 @@ export default class App {
         let mediaService;
         if(this.#mediaServicesClient)
             mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
-        
-        // TODO: Adding passport service HERE
-        //let passportService;
-        //passportService = new PassportService(.....)
 
         // * Bind all the controllers
         this.bindControllers([mediaService, sanityCrl])

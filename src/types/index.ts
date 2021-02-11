@@ -13,7 +13,8 @@ export type AzureAccountConfig = {
     Location: string
     ResourceGroup: string
     SubscriptionId: string
-    StorageConnection: string
+    StorageConnection: string,
+    TransformName: string,
     ArmAadAudience: string
     ArmEndpoint: string
     activeDirectoryEndpointUrl: string
@@ -27,4 +28,10 @@ export type FileInfo = {
 export enum AssetType {
     Input,
     Output
+}
+
+export type EncodingInfo = {
+    filename: string
+    inputAssetName: string
+    outputAssetName: string
 }

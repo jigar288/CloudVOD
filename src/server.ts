@@ -15,6 +15,7 @@ const azureAccountConfig: AzureAccountConfig = {
     ResourceGroup: process.env.ResourceGroup || '',
     SubscriptionId: process.env.SubscriptionId || '',
     StorageConnection: process.env.StorageConnection || '',
+    TransformName: process.env.TransformName || '',
     ArmAadAudience: 'https://management.core.windows.net/',
     ArmEndpoint: 'https://management.azure.com/',
     activeDirectoryEndpointUrl: 'https://login.microsoftonline.com/',

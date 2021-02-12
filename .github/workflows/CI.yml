@@ -28,3 +28,15 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+      env:
+        # Pull environmental variable from Github
+        AadClientId: ${{ secrets.AADCLIENTID }}
+        AadSecret: ${{ secrets.AADSECRET }}
+        AadTenantDomain: ${{ secrets.AADTENANTDOMAIN }}
+        AadTenantId: ${{ secrets.AADTENANTID }}
+        AccountName: ${{ secrets.ACCOUNTNAME }}
+        Location: ${{ secrets.LOCATION }}
+        ResourceGroup: ${{ secrets.RESOURCEGROUP }}
+        SubscriptionId: ${{ secrets.SUBSCRIPTIONID }}
+        StorageConnection: ${{ secrets.STORAGECONNECTION }}
+        TransformName: ${{ secrets.TRANSFORMNAME }}

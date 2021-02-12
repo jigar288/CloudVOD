@@ -15,23 +15,23 @@ const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]
     }
 }
 
-export const Get = (path: string, middlewares?: Middleware[]) => {
+export const Get = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('get', path, middlewares)
 }
 
-export const Post = (path: string, middlewares?: Middleware[]) => {
+export const Post = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('post', path, middlewares)
 }
 
-export const Put = (path: string, middlewares?: Middleware[]) => {
+export const Put = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('put', path, middlewares)
 }
 
-export const Delete = (path: string, middlewares?: Middleware[]) => {
+export const Delete = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('delete', path, middlewares)
 }
 
-export const All = (path: string, middlewares?: Middleware[]) => {
+export const All = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('all', path, middlewares)
 }
 

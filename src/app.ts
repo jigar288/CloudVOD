@@ -35,16 +35,19 @@ export default class App {
         this.#app.options('*', cors)
     }
 
-    public start = async (): Promise<void> => {
+    public start = async (callBack?: Mocha.Done): Promise<void> => {
         await this.initialize()
 
         this.#server = this.#app.listen(this.#port, () => {
             console.log(`${this.#serviceName} has started on port ${this.#port}.`)
+            if (callBack) callBack();
         })
     }
 
-    public stop = async (): Promise<void> => {
-        this.#server?.close()
+    public stop = async (callBack?: Mocha.Done): Promise<void> => {
+        this.#server?.close(() => {
+            if (callBack) callBack();
+        })
     }
 
     private async initialize(): Promise<void> {
@@ -75,6 +78,7 @@ export default class App {
             console.log('🌟 Connected with Azure Media Service')
         } catch (err) {
             console.error(`❌ Unable to authenticate with Azure for tenant: ${AadTenantDomain}`)
+            console.error(`Debug: `+err)
             exit(1)
         }
 

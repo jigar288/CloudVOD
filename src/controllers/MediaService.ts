@@ -7,7 +7,7 @@ import { AzureAccountConfig, FileInfo, EncodingInfo } from 'types'
 import { AssetType } from '../types/index'
 import { BlobServiceClient, BlobUploadCommonResponse } from '@azure/storage-blob'
 import { AssetsListContainerSasResponse, JobsCreateResponse, ListContainerSasInput } from '@azure/arm-mediaservices/esm/models'
-import { AssetContainerPermission, Job, JobInputClipUnion, JobInputUnion, JobOutputUnion, JobOutputAsset, JobInputAsset } from '@azure/arm-mediaservices/src/models/index'
+import { AssetContainerPermission, Job, JobInputClipUnion, JobInputUnion, JobOutputUnion, JobOutputAsset, JobInputAsset, StreamingLocator } from '@azure/arm-mediaservices/src/models/index'
 import parse from 'url-parse'
 import bufferToStream from 'into-stream'
 
@@ -36,17 +36,94 @@ export class MediaService extends Controller {
         try{
             uploadResult = await blockBlobClient.uploadStream(fileInfo.fileReadStream);            
         }catch(error){
-            console.error(`error uploading file ${error}`)
+            console.error(`error uploading file (${fileInfo.fileName}) ${error}`)
             return false;
         }
 
         if(uploadResult._response.status == 201){ 
-            console.info(`uploading file to storage container() successful w/ status: ${uploadResult._response.status}`)  
+            console.info(`uploading file (${fileInfo.fileName}) to storage container() successful w/ status: ${uploadResult._response.status}`)  
             return true;
         }else{
             return false
         }
     }
+
+    private async createStreamingLocator(assetName: string, streamingPolicyName: string){
+
+        const { ResourceGroup, AccountName } = this.#azureConfig
+        const streamingLocatorsName = `${assetName}-streaming-locator`;
+
+        const streamingLocatorMetadata: StreamingLocator = {
+            assetName: assetName,
+            streamingPolicyName: streamingPolicyName
+        }        
+
+        try{        
+            const response = await this.#mediaServicesClient.streamingLocators.create(ResourceGroup, AccountName, streamingLocatorsName, streamingLocatorMetadata);
+
+            if(response._response.status == 201){
+                console.info(`Successfully created streaming locator for ${assetName}`)
+                return true
+            }
+            
+        }catch(error){
+            console.error(`Error creating streaming locator for ${assetName}`)
+        }
+
+        return false;
+    }
+
+    private async getStreamingEndpointHostName(streamingEndpointName: string){
+        
+        const { ResourceGroup, AccountName } = this.#azureConfig
+        let streamingEndpointHostName;
+
+        try{
+            const response =  await this.#mediaServicesClient.streamingEndpoints.get(ResourceGroup, AccountName, streamingEndpointName);
+
+            if(response._response.status == 200){
+                streamingEndpointHostName = response.hostName;
+            }
+        }catch(error){
+            console.error(`Error getting streaming endpoint: ${error}`)
+        }
+
+        return streamingEndpointHostName;
+    }
+
+    private async getStreamingPath(streamingLocatorName: string){
+
+        const { ResourceGroup, AccountName } = this.#azureConfig
+        let streamingPath;
+
+        try{
+            const response =  await this.#mediaServicesClient.streamingLocators.listPaths(ResourceGroup, AccountName, streamingLocatorName);
+
+            if(response._response.status == 200){
+                const streamingPaths =  response.streamingPaths?.shift();
+                const paths = streamingPaths?.paths;
+                if(paths){
+                    const firstPath = paths[0];
+                    streamingPath = firstPath.split('\n')[0]; 
+                }
+            }        
+        }catch(error){
+            console.error(`Error getting streaming endpoint for streaming locator ${streamingLocatorName} - ${error}`)
+        }
+
+        return streamingPath;
+    }
+
+    private async getStreamingURL(streamingLocatorName: string, streamingEndpointName: string){
+        let streamingURL;
+
+        if(streamingLocatorName){
+            const streamingEndpointHostName = await this.getStreamingEndpointHostName(streamingEndpointName);
+            const streamingPath = await this.getStreamingPath(streamingLocatorName);
+            streamingURL = `https://${streamingEndpointHostName}${streamingPath}`;
+        }
+        return streamingURL;
+    }    
 
     private async uploadFileToAsset(assetName: string, fileInfo: FileInfo): Promise<boolean> {
         const currentDate = new Date()
@@ -100,15 +177,16 @@ export class MediaService extends Controller {
 
     //TODO: Only 1 input & output asset should be created per user & should postfix a unique ID to asset name. Contents should be uploaded to existing assets
     private async processFile(fileInfo: FileInfo): Promise<boolean> {
-        let fileUploadResult = false;
-        let fileEncodingResult = false;
+        let isFileUploadSuccessful = false;
+        let isFileEncodingSubmitted = false;
+        let isStreamingLocatorStarted = false;
         const inputAssetName = await this.createAsset(fileInfo.fileName, AssetType.Input)
 
         if(inputAssetName){
-            fileUploadResult = await this.uploadFileToAsset(inputAssetName, fileInfo)
+            isFileUploadSuccessful = await this.uploadFileToAsset(inputAssetName, fileInfo)
         }
 
-        if(fileUploadResult){
+        if(isFileUploadSuccessful){
             const outputAssetName = await this.createAsset(fileInfo.fileName, AssetType.Output)
 
             if(inputAssetName && outputAssetName){
@@ -117,10 +195,16 @@ export class MediaService extends Controller {
                     inputAssetName: inputAssetName,
                     outputAssetName: outputAssetName
                 }
-                fileEncodingResult = await this.startEncoding(encodingInfo);
+                isFileEncodingSubmitted = await this.startEncoding(encodingInfo);
             }
+
+            if(isFileEncodingSubmitted && outputAssetName){
+                const streamingPolicyName = 'Predefined_ClearStreamingOnly';
+                isStreamingLocatorStarted = await this.createStreamingLocator(outputAssetName, streamingPolicyName);
+            }
+
         }                    
-        return fileEncodingResult;
+        return isStreamingLocatorStarted;
     }
 
     private createJobMetadata(encodingInfo: EncodingInfo){
@@ -159,7 +243,7 @@ export class MediaService extends Controller {
         
         try{
             jobCreationResponse = await this.#mediaServicesClient.jobs.create(ResourceGroup, AccountName, TransformName, jobName, jobMetadata);                    
-            console.info(`Job successfully created with status: ${jobCreationResponse._response.status}`)
+            console.info(`Job successfully created for file (${encodingInfo.filename}) with status: ${jobCreationResponse._response.status}`)
             if(jobCreationResponse._response.status == 201)
                 return true;
         }catch(error){
@@ -188,9 +272,9 @@ export class MediaService extends Controller {
             res.status(500).send('Error uploading file. Its must be on our end. Please try again.')
         }        
     }    
-
+    
     //Fixme: update client at later date - this is only for testing purposes
-    @Get('/file-uploader')
+    @Get('/file-upload')
     async file_uploader(_req: Request, res: Response): Promise<void> {    
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write('<form action="file-upload" method="post" enctype="multipart/form-data">');
@@ -198,8 +282,7 @@ export class MediaService extends Controller {
         res.write('<input type="submit">');
         res.write('</form>');
         return res.end();
-    }
-    
+    }        
 }
 
 
@@ -207,19 +290,13 @@ export class MediaService extends Controller {
  * 
  * TODO: [other tasks]
  * 
- * - create streaming locator per asset 
- *      - create this when new asset is created
- * - Start streaming endpoint 
- *      - (only once)
- * - create streaming URLs: concat streaming endpoint host name + steaming locator path
- *      - may not be possible until file encoding is done since .ism file is needed
- *      - if so then will need to use event grid to monitor task
+ * - Start streaming endpoint via portal
+ * - create streaming URLs
+ *      - monitor encoding job via event grid
+ *      - once job finishes get the streaming URL
+ *      - add streaming url to DB 
  * 
- * [low priority tasks]
- * 
- * - monitor encoding job via event grid
+ * [low priority tasks]* 
  * - delete job after its finished & output assets are created (50k limit)
- * 
  * ! why does port forwarding stop after the file uploader route?
-
  */

@@ -1,8 +1,9 @@
-/* eslint-disable prefer-rest-params */
 import { Request, Response, Router } from 'express'
 import { Middleware } from '../types'
 
-const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]) => {
+type RouteDescriptor = (target: Controller, _propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor
+
+const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]): RouteDescriptor => {
     return (target: Controller, _propertyKey: string, descriptor: PropertyDescriptor) => {
         if (Object.getOwnPropertyDescriptor(target, 'routes') == null || target.routes === undefined) target.routes = []
         target.routes.push({
@@ -15,23 +16,27 @@ const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]
     }
 }
 
-export const Get = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export const Get = (path: string, middlewares?: Middleware[]): RouteDescriptor => {
     return RouteDecorator('get', path, middlewares)
 }
 
-export const Post = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export const Post = (path: string, middlewares?: Middleware[]): RouteDescriptor => {
+    // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('post', path, middlewares)
 }
 
-export const Put = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export const Put = (path: string, middlewares?: Middleware[]): RouteDescriptor => {
+    // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('put', path, middlewares)
 }
 
-export const Delete = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export const Delete = (path: string, middlewares?: Middleware[]): RouteDescriptor => {
+    // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('delete', path, middlewares)
 }
 
-export const All = (path: string, middlewares?: Middleware[]) => { // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
+export const All = (path: string, middlewares?: Middleware[]): RouteDescriptor => {
+    // eslint-disable-line @typescript-eslint/explicit-module-boundary-types
     return RouteDecorator('all', path, middlewares)
 }
 

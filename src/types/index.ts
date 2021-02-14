@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import { ReadStream } from 'fs'
 import { Readable } from 'stream'
 
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void
@@ -13,21 +12,21 @@ export type AzureAccountConfig = {
     Location: string
     ResourceGroup: string
     SubscriptionId: string
-    StorageConnection: string,
-    TransformName: string,
+    StorageConnection: string
+    TransformName: string
     ArmAadAudience: string
     ArmEndpoint: string
     activeDirectoryEndpointUrl: string
 }
 
 export type FileInfo = {
-    fileName: string;
+    fileName: string
     fileReadStream: Readable
 }
 
 export enum AssetType {
     Input,
-    Output
+    Output,
 }
 
 export type EncodingInfo = {

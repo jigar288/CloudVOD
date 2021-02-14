@@ -40,30 +40,28 @@ export default class App {
 
         this.#server = this.#app.listen(this.#port, () => {
             console.log(`${this.#serviceName} has started on port ${this.#port}.`)
-            if (callBack) callBack();
+            if (callBack) callBack()
         })
     }
 
     public stop = async (callBack?: Mocha.Done): Promise<void> => {
         this.#server?.close(() => {
-            if (callBack) callBack();
+            if (callBack) callBack()
         })
     }
 
     private async initialize(): Promise<void> {
         await this.initializeServices()
 
+        if (!this.#mediaServicesClient) exit(1)
+
         // * Bind middlewares
-        // TODO: Verify that `busyboy` is compatible with other middlewares
-        const middlewares = [express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload') ]
+        const middlewares = [express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload')]
         this.bindMiddlewares(middlewares)
 
         // * Create and controllers
         const sanityCrl = new Sanity('/')
-
-        let mediaService;
-        if(this.#mediaServicesClient)
-            mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
+        const mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
 
         // * Bind all the controllers
         this.bindControllers([mediaService, sanityCrl])
@@ -78,8 +76,8 @@ export default class App {
             console.log('🌟 Connected with Azure Media Service')
         } catch (err) {
             console.error(`❌ Unable to authenticate with Azure for tenant: ${AadTenantDomain}`)
-            console.error(`Debug: `+err)
-            exit(1)
+            console.error(`Debug: ` + err)
+            throw err
         }
 
         // * Other clients and connections here

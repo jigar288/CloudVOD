@@ -22,3 +22,9 @@ This diagram details the process of uploading, encoding, and monitoring
 4. Run `npm run watch` in root dir
 5. Go to `http://localhost:5000/api/az/file-uploader` in a web browser and upload a video file 
 
+
+
+## Links
+
+* [CS 398 Project Breakdown & Schedule](https://docs.google.com/document/d/1TPW5O2suvk0QhPRj9qDWTAZpsLD9Q4VAowbPcxPaejY/edit)
+* [Document of learnings, experiences, and possible topics for the final report](https://docs.google.com/document/d/1k7a-R2npgfwyxpXZXpCXmq1LcAA_Dwydnfnx_EMB630/edit)

@@ -281,7 +281,7 @@ export class MediaService extends Controller {
  *      - once job finishes get the streaming URL
  *      - add streaming url to DB
  *
- * [low priority tasks]*
+ * [low priority tasks]
  * - delete job after its finished & output assets are created (50k limit)
  * ! why does port forwarding stop after the file uploader route?
  */

@@ -4,6 +4,7 @@ import { AzureAccountConfig } from 'types'
 import assert from 'assert'
 import App from '../app'
 import got from 'got'
+import { ConfigParams } from 'express-openid-connect'
 
 dotenv.config()
 
@@ -23,6 +24,16 @@ const azureAccountConfig: AzureAccountConfig = {
     activeDirectoryEndpointUrl: 'https://login.microsoftonline.com/',
 }
 
+const openIDConfig: ConfigParams = {
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.AUTH0_CLIENT_SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    issuerBaseURL: process.env.AUTH0_DOMAIN,
+    routes: { login: false, logout: false },
+}
+
 // Print out missing environment var in err
 for (const [key, value] of Object.entries(azureAccountConfig)) {
     if (value == '') {
@@ -30,7 +41,7 @@ for (const [key, value] of Object.entries(azureAccountConfig)) {
     }
 }
 
-const app = new App(parseInt(process.env.API_PORT || '') || 5000, '/api', 'CloudVOD', azureAccountConfig)
+const app = new App(parseInt(process.env.API_PORT || '') || 5000, '/api', 'CloudVOD', azureAccountConfig, openIDConfig)
 describe('Basic', function () {
     before(function (done) {
         // * Wait for app to initialize

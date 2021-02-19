@@ -10,6 +10,9 @@ import { AzureAccountConfig } from 'types'
 import { exit } from 'process'
 import { MediaService } from './controllers/MediaService'
 import multer from 'multer'
+import { auth, ConfigParams as OpenIDConfigParams } from 'express-openid-connect'
+import {Auth} from './controllers/Auth'
+
 export default class App {
     // # represents private variables - EC2020
     #app: express.Application
@@ -17,6 +20,7 @@ export default class App {
     #serviceName: string
     #port: number
     #azureConfig: AzureAccountConfig
+    #openIDConfig: OpenIDConfigParams
 
     #server?: Server
     #mediaServicesClient?: AzureMediaServices
@@ -25,12 +29,13 @@ export default class App {
         return this.#app
     }
 
-    constructor(port: number, basePath: string, serviceName: string, azureConfig: AzureAccountConfig) {
+    constructor(port: number, basePath: string, serviceName: string, azureConfig: AzureAccountConfig, openIDConfig: OpenIDConfigParams) {
         this.#app = express()
         this.#port = port
         this.#basePath = basePath
         this.#serviceName = serviceName
         this.#azureConfig = azureConfig
+        this.#openIDConfig = openIDConfig
 
         this.#app.options('*', cors)
     }
@@ -56,15 +61,16 @@ export default class App {
         if (!this.#mediaServicesClient) exit(1)
 
         // * Bind middlewares
-        const middlewares = [express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload')]
+        const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload')]
         this.bindMiddlewares(middlewares)
 
         // * Create and controllers
         const sanityCrl = new Sanity('/')
+        const authCrl = new Auth('/user')
         const mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
 
         // * Bind all the controllers
-        this.bindControllers([mediaService, sanityCrl])
+        this.bindControllers([mediaService, sanityCrl, authCrl])
     }
 
     private async initializeServices(): Promise<void> {

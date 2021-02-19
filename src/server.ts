@@ -1,5 +1,6 @@
 // * Retrieve environment variables
 import dotenv from 'dotenv'
+import { ConfigParams } from 'express-openid-connect'
 import { AzureAccountConfig } from 'types'
 import App from './app'
 
@@ -21,10 +22,20 @@ const azureAccountConfig: AzureAccountConfig = {
     activeDirectoryEndpointUrl: 'https://login.microsoftonline.com/',
 }
 
+const openIDConfig: ConfigParams = {
+    authRequired: false,
+    auth0Logout: true,
+    secret: process.env.AUTH0_CLIENT_SECRET,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    issuerBaseURL: process.env.AUTH0_DOMAIN,
+    routes: { login: false, logout: false },
+}
+
 /**
  * Start Express server.
  */
-const app = new App(parseInt(process.env.API_PORT || '') || 5000, '/api', 'CloudVOD', azureAccountConfig)
+const app = new App(parseInt(process.env.API_PORT || '') || 5000, '/api', 'CloudVOD', azureAccountConfig, openIDConfig)
 
 ;(async () => {
     await app.start()

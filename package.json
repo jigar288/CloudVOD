@@ -22,6 +22,7 @@
         "@types/mocha": "^8.2.0",
         "@types/multer": "^1.4.5",
         "@types/node": "^14.14.28",
+        "@types/pg": "^7.14.10",
         "@typescript-eslint/eslint-plugin": "^4.15.0",
         "@typescript-eslint/parser": "^4.15.0",
         "concurrently": "^5.3.0",
@@ -53,6 +54,7 @@
         "fs": "0.0.1-security",
         "into-stream": "^6.0.0",
         "multer": "^1.4.2",
+        "pg": "^8.5.1",
         "url-parse": "^1.4.7"
     }
 }

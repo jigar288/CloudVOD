@@ -10,6 +10,8 @@ import { JobsCreateResponse, ListContainerSasInput } from '@azure/arm-mediaservi
 import { AssetContainerPermission, Job, JobInputClipUnion, JobInputUnion, JobOutputUnion, JobOutputAsset, JobInputAsset, StreamingLocator } from '@azure/arm-mediaservices/src/models/index'
 import parse from 'url-parse'
 import bufferToStream from 'into-stream'
+import { requiresAuth } from 'express-openid-connect'
+import path from 'path'
 
 export class MediaService extends Controller {
     #mediaServicesClient: AzureMediaServices
@@ -268,6 +270,62 @@ export class MediaService extends Controller {
         res.write('<input type="submit">')
         res.write('</form>')
         return res.end()
+    }
+
+    @Get('/video-test', [requiresAuth()])
+    async video_test(req: Request, res: Response): Promise<void> {
+        res.writeHead(200, { 'Content-Type': 'text/html' })
+        res.write(
+            `
+            <html>
+            <link href="http://amp.azure.net/libs/amp/2.3.6/skins/amp-default/azuremediaplayer.min.css" rel="stylesheet">
+            <script src="http://amp.azure.net/libs/amp/2.3.6/azuremediaplayer.min.js"></script>
+
+            <script>
+                function handleOnClick() {
+
+                    var myPlayer = amp(
+                        'azuremediaplayer', {
+                            /* Options */
+                            techOrder: ["azureHtml5JS", "flashSS", "html5FairPlayHLS", "silverlightSS", "html5"],
+                            "nativeControlsForTouch": false,
+                            autoplay: false,
+                            controls: true,
+                            width: "640",
+                            height: "400",
+                            poster: ""
+                        },
+                        function () {
+                            console.log('Good to go!');
+                            // add an event listener
+                            this.addEventListener('ended', function () {
+                                console.log('Finished!');
+                            })
+                        },
+                    );
+
+
+
+                    myPlayer.src([{
+                        src: document.getElementById('source_input').value,
+                        type: "application/vnd.ms-sstr+xml"
+                    }]);
+                }
+            </script>
+
+            <video id="azuremediaplayer" class="azuremediaplayer amp-default-skin amp-big-play-centered" tabindex="0"></video>
+            <br>
+            Streaming URL Here:
+            <input type="text" id="source_input"> <button id="source_button" onclick={handleOnClick}>Start Streaming</button>
+
+            <script>
+                document.getElementById('source_button').onclick = handleOnClick
+            </script>
+
+            </html>
+            `,
+        )
+        res.end()
     }
 }
 

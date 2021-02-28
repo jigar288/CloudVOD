@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { Middleware } from '../types'
 
+/* eslint-disable no-unused-vars */
 type RouteDescriptor = (target: Controller, _propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor
 
 const RouteDecorator = (method: string, path: string, middlewares?: Middleware[]): RouteDescriptor => {

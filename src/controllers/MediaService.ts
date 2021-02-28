@@ -11,7 +11,6 @@ import { AssetContainerPermission, Job, JobInputClipUnion, JobInputUnion, JobOut
 import parse from 'url-parse'
 import bufferToStream from 'into-stream'
 import { requiresAuth } from 'express-openid-connect'
-import path from 'path'
 
 export class MediaService extends Controller {
     #mediaServicesClient: AzureMediaServices

@@ -14,7 +14,7 @@
         "lint": "eslint . --ext .ts",
         "mocha": "mocha -r ts-node/register src/tests/*.ts",
         "credential-guard": "./src/tests/credential-guard.sh",
-        "local-action": "./src/tests/utility/env2GithubSecret.sh > .secret && act --secret-file ./.secret && rm .secret",
+        "local-action": "./src/tests/utility/env2GithubSecret.sh > .secret && (act --secret-file ./.secret || true) && rm .secret",
         "test": "npm run credential-guard && npm run lint && npm run mocha"
     },
     "devDependencies": {

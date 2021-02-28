@@ -48,7 +48,7 @@
         "@azure/arm-mediaservices": "^8.0.0",
         "@azure/ms-rest-azure-js": "^2.0.2",
         "@azure/ms-rest-js": "^2.2.3",
-        "@azure/ms-rest-nodeauth": "^3.0.6",
+        "@azure/ms-rest-nodeauth": "^3.0.7",
         "@azure/storage-blob": "^12.4.1",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",

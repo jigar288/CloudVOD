@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { Readable } from 'stream'
 
+/* eslint-disable no-unused-vars */
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void
 
 export type AzureAccountConfig = {

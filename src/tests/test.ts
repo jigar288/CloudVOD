@@ -5,18 +5,18 @@ import App from '../app'
 import got from 'got'
 
 
-const checkEnvValuesExistence = ( (config) => {
+const checkEnvValuesExistence = ( (configType, config) => {
     // Print out missing environment var in err
     for (const [key, value] of Object.entries(config)) {
-        if (value == '') {
-            console.error('Missing env var ' + key)
+        if (value == 'N/A') {
+            console.error('Missing ' + configType + ' env var ' + key)
         }
     }
 });
 
-checkEnvValuesExistence(azureAccountConfig);
-checkEnvValuesExistence(openIDConfig);
-checkEnvValuesExistence(videoDatabaseConfig);
+checkEnvValuesExistence("azureAccountConfig", azureAccountConfig);
+checkEnvValuesExistence("openIDConfig", openIDConfig);
+checkEnvValuesExistence("openIDConfig", videoDatabaseConfig);
 
 
 const app = new App(parseInt(process.env.API_PORT || '') || 5000, '/api', 'CloudVOD', azureAccountConfig, openIDConfig, videoDatabaseConfig)

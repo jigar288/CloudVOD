@@ -12,7 +12,10 @@
         "watch-ts": "tsc -w",
         "dev": "ts-node src/index.ts",
         "lint": "eslint . --ext .ts",
-        "test": "npm run lint && mocha -r ts-node/register src/tests/*.ts"
+        "mocha": "mocha -r ts-node/register src/tests/*.ts",
+        "credential-guard": "./src/tests/credential-guard.sh",
+        "local-action": "./src/tests/utility/env2GithubSecret.sh > .secret && (act --secret-file ./.secret || true) && rm .secret",
+        "test": "npm run credential-guard && npm run lint && npm run mocha"
     },
     "devDependencies": {
         "@types/chai": "^4.2.15",

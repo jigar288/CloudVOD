@@ -6,11 +6,16 @@ import got from 'got'
 
 
 const checkEnvValuesExistence = ( (config) => {
+    let exitCode=0;
     // Print out missing environment var in err
     for (const [key, value] of Object.entries(config)) {
-        if (value == '') {
+        if (value == 'N/A') {
             console.error('Missing env var ' + key)
+            exitCode = 1
         }
+    }
+    if (exitCode != 0){
+        process.exit(1)
     }
 });
 

@@ -10,7 +10,33 @@ on:
         branches: [master]
 
 jobs:
-    build:
+    credential-guard:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Credential-Guard
+              run: ./src/tests/credential-guard.sh
+              env:
+                  # Pull environmental variable from Github
+                  AadClientId: ${{ secrets.AADCLIENTID }}
+                  AadSecret: ${{ secrets.AADSECRET }}
+                  AadTenantDomain: ${{ secrets.AADTENANTDOMAIN }}
+                  AadTenantId: ${{ secrets.AADTENANTID }}
+                  AccountName: ${{ secrets.ACCOUNTNAME }}
+                  Location: ${{ secrets.LOCATION }}
+                  ResourceGroup: ${{ secrets.RESOURCEGROUP }}
+                  SubscriptionId: ${{ secrets.SUBSCRIPTIONID }}
+                  StorageConnection: ${{ secrets.STORAGECONNECTION }}
+                  TransformName: ${{ secrets.TRANSFORMNAME }}
+                  BASE_URL: ${{ secrets.BASE_URL }}
+                  AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+                  AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+                  AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+                  DB_SERVER_NAME: ${{ secrets.DB_SERVER_NAME }}
+                  DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
+                  DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
+                  DB_NAME: ${{ secrets.DB_NAME }}
+    node:
         runs-on: ubuntu-latest
 
         strategy:

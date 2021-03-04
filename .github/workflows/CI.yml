@@ -36,6 +36,7 @@ jobs:
                   DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
                   DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
                   DB_NAME: ${{ secrets.DB_NAME }}
+                  DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
     node:
         runs-on: ubuntu-latest
 
@@ -73,3 +74,4 @@ jobs:
                   DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
                   DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
                   DB_NAME: ${{ secrets.DB_NAME }}
+                  DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}

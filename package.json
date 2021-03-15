@@ -34,7 +34,7 @@
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-prettier": "^3.3.1",
         "got": "^11.8.2",
-        "mocha": "^8.2.1",
+        "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
         "ts-node": "^9.1.1",
         "typescript": "^4.2.2"

@@ -24,7 +24,7 @@
         "@types/got": "^9.6.11",
         "@types/mocha": "^8.2.1",
         "@types/multer": "^1.4.5",
-        "@types/node": "^14.14.31",
+        "@types/node": "^14.14.34",
         "@types/pg": "^7.14.10",
         "@types/url-parse": "^1.4.3",
         "@typescript-eslint/eslint-plugin": "^4.15.2",

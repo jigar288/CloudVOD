@@ -6,14 +6,13 @@ import { Controller } from './controllers'
 import { Server } from 'http'
 import { Middleware } from './types'
 import { Sanity } from './controllers/Sanity'
-import { AzureMediaServices } from '@azure/arm-mediaservices'
-import { loginWithServicePrincipalSecretWithAuthResponse } from '@azure/ms-rest-nodeauth'
 import { AzureAccountConfig } from 'types'
 import { exit } from 'process'
-import { MediaService } from './controllers/MediaService'
 import { auth, ConfigParams as OpenIDConfigParams } from 'express-openid-connect'
 import { Auth } from './controllers/Auth'
-import { VideoDatabase } from './controllers/VideoDatabase'
+import MediaClient from './data/MediaClient'
+import VideoDatabaseClient from './data/VideoDatabaseClient'
+import { VideoController } from './controllers/VideoController'
 
 export default class App {
     // # represents private variables - EC2020
@@ -26,8 +25,8 @@ export default class App {
     #videoDatabaseConfig: pg.ClientConfig 
 
     #server?: Server
-    #mediaServicesClient?: AzureMediaServices
-    #videoDatabaseClient?: pg.Client
+    #mediaClient?: MediaClient
+    #videoDBClient?: VideoDatabaseClient
 
     get app(): express.Application {
         return this.#app
@@ -42,14 +41,14 @@ export default class App {
         this.#openIDConfig = openIDConfig
         this.#videoDatabaseConfig = videoDatabaseConfig
 
-        this.#app.options('*', cors) //! FIXME: update cors configuration after deployment
+        this.#app.use(cors()) //! FIXME: update cors configuration after deployment
     }
 
     public start = async (callBack?: Mocha.Done): Promise<void> => {
         await this.initialize()
 
         this.#server = this.#app.listen(this.#port, () => {
-            console.log(`${this.#serviceName} has started on port ${this.#port}.`)
+            console.info(`${this.#serviceName} has started on port ${this.#port}.`)
             if (callBack) callBack()
         })
     }
@@ -59,54 +58,43 @@ export default class App {
             if (callBack) callBack()
         })
 
-        this.#videoDatabaseClient?.end() //closing DB connection
+        // TODO close DB connection
     }
 
     private async initialize(): Promise<void> {
         await this.initializeServices()
 
-        if (!this.#mediaServicesClient || !this.#videoDatabaseClient) exit(1)
+        // TODO: add DB client here
+        if (!this.#mediaClient || !this.#videoDBClient) exit(1)
+
+        if(!this.#videoDBClient.isDBConnectionEstablished())
+            exit(1)
 
         // * Bind middlewares
         const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload')]
         this.bindMiddlewares(middlewares)
-
+        
         // * Create and controllers
         const sanityCrl = new Sanity('/')
         const authCrl = new Auth('/user')
-        const mediaService = new MediaService('/az', this.#mediaServicesClient, this.#azureConfig)
-        const videoDatabase = new VideoDatabase('/data', this.#videoDatabaseClient)
+
+        // TODO: allow only authenticated users to upload but unauthenticated can view videos
+        const videoController = new VideoController('/data', this.#mediaClient, this.#videoDBClient) 
+
+        // TODO: link DB API routes
 
         // * Bind all the controllers
-        this.bindControllers([mediaService, sanityCrl, authCrl, videoDatabase])
+        this.bindControllers([sanityCrl, authCrl, videoController])
     }
 
     private async initializeServices(): Promise<void> {
         // * Connect with Azure Media Service and create the client
-        const { AadClientId, AadSecret, AadTenantId, SubscriptionId, AadTenantDomain } = this.#azureConfig
-        try {
-            const response = await loginWithServicePrincipalSecretWithAuthResponse(AadClientId, AadSecret, AadTenantId)
-            this.#mediaServicesClient = new AzureMediaServices(response.credentials, SubscriptionId)
-            console.info('🌟 Connected with Azure Media Service')
-        } catch (err) {
-            console.error(`❌ Unable to authenticate with Azure for tenant: ${AadTenantDomain}`)
-            console.error(`Debug: ` + err)
-            throw err
-        }
+        this.#mediaClient = await MediaClient.build(this.#azureConfig)
+
+        // * Connect to Video Database Client to store metadata 
+        this.#videoDBClient = new VideoDatabaseClient(this.#videoDatabaseConfig);
 
         // * Other clients and connections here
-        this.#videoDatabaseClient = new pg.Client(this.#videoDatabaseConfig)
-
-        this.#videoDatabaseClient.connect(err => {
-            if (err) {
-                console.error(`❌ Unable to connect to video database with host: ${this.#videoDatabaseConfig.host}`)
-                throw err;
-            }
-            else {  
-                console.info('🚀 Connected with Azure Video Database')
-            }   
-        });
-
     }
 
     // * Calls `app.use` on each middleware

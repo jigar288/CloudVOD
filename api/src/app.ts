@@ -59,6 +59,8 @@ export default class App {
         })
 
         // TODO close DB connection
+        this.#videoDBClient?.closeDBConnection()
+
     }
 
     private async initialize(): Promise<void> {

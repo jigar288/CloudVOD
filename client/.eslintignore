@@ -1,0 +1,5 @@
+# Ignore Node Modules folder
+node_modules/
+
+# Ignore the build folder
+build/

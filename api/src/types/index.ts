@@ -36,7 +36,6 @@ export type EncodingInfo = {
     outputAssetName: string
 }
 
-//TODO: don't need wasRequestSuccessful: boolean --> just throw an error like MediaServiceClient code & catch it
 export type DBQueryResponse = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any

@@ -58,16 +58,15 @@ export default class App {
             if (callBack) callBack()
         })
 
-        this.#videoDBClient?.closeDBConnection()
+        this.#videoDBClient?.dbConnection.close()
     }
 
     private async initialize(): Promise<void> {
         await this.initializeServices()
 
-        // TODO: add DB client here
         if (!this.#mediaClient || !this.#videoDBClient) exit(1)
 
-        if(!this.#videoDBClient.isDBConnectionEstablished())
+        if(!this.#videoDBClient.dbConnection.isEstablished())
             exit(1)
 
         // * Bind middlewares
@@ -78,10 +77,8 @@ export default class App {
         const sanityCrl = new Sanity('/')
         const authCrl = new Auth('/user')
 
-        // TODO: allow only authenticated users to upload but unauthenticated can view videos
+        // TODO: use rest standards --> /user/<verb>/
         const videoController = new VideoController('/data', this.#mediaClient, this.#videoDBClient) 
-
-        // TODO: link DB API routes
 
         // * Bind all the controllers
         this.bindControllers([sanityCrl, authCrl, videoController])
@@ -92,7 +89,7 @@ export default class App {
         this.#mediaClient = await MediaClient.build(this.#azureConfig)
 
         // * Connect to Video Database Client to store metadata 
-        this.#videoDBClient = new VideoDatabaseClient(this.#videoDatabaseConfig);
+        this.#videoDBClient = await VideoDatabaseClient.build(this.#videoDatabaseConfig)
 
         // * Other clients and connections here
     }

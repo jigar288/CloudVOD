@@ -38,8 +38,8 @@ export class VideoController extends Controller {
             //* create streaming locator
             const outputAssetName = (jobSubmissionResult.outputs[0] as JobOutputAsset).assetName;
             const createLocatorResponse = await this.#mediaClient.streaming_locator.create(outputAssetName)
-                  
-            const dbWriteResponse = await this.#videoDBClient.insertVideoDataToDB(videoTitle, videoDescription , outputAssetName);
+
+            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName);                  
             console.info(dbWriteResponse)            
 
         }catch(error){              
@@ -81,14 +81,18 @@ export class VideoController extends Controller {
         return res.end()
     }    
 
-    // Note: this route shouldn't require auth and will eventually be moved to another controller
     @Get('/videos')
     async get_video_metadata(_req: Request, res: Response): Promise<void> {
         
         let { limit } = _req.query;
-        limit = limit?.toString();
-        const queryResult = await this.#videoDBClient.fetchVideoDataFromDB(limit)
+        limit = limit?.toString();        
+        let queryResult;
 
+        if(limit)
+          queryResult = await this.#videoDBClient.videoMetadata.get(limit);
+        else
+          queryResult = await this.#videoDBClient.videoMetadata.get();
+        
         if(queryResult.wasRequestSuccessful)
             this.ok(res, {message: queryResult})
         else    
@@ -117,7 +121,7 @@ export class VideoController extends Controller {
                 const smoothStreamingURL = streamingUrlList[4];
 
                 // * update DB
-                const dbUpdateResponse = await this.#videoDBClient.updateStreamingUrlByAsset(smoothStreamingURL, outputAssetName)
+                const dbUpdateResponse = await this.#videoDBClient.streamingURL.update(smoothStreamingURL, outputAssetName)
                 console.info(dbUpdateResponse)
             }
         }

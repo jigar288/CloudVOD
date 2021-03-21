@@ -18,6 +18,13 @@ else
     export $(egrep -v '^#' .env | xargs) # Import local env file
 fi
 
+# Validate Test runner
+if [ $GITHUB_ACTOR ];then
+    echo "This test is run by $GITHUB_ACTOR"
+else
+    echo "This test is run by unknown"
+fi
+
 # Result val default at 0(success)
 returnVal=0
 

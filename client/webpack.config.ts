@@ -5,7 +5,6 @@ import Dotenv from 'dotenv-webpack' // Support for ENV values
 import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
 import TerserPlugin from 'terser-webpack-plugin' // Minifies the bundled JS
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import FaviconsWebpackPlugin from 'favicons-webpack-plugin'
 
 // * Load ENV Variables from the .env and .env.defaults files for use within webpack
 dotenv.config()

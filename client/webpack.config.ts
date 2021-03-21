@@ -5,7 +5,6 @@ import Dotenv from 'dotenv-webpack' // Support for ENV values
 import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
 import TerserPlugin from 'terser-webpack-plugin' // Minifies the bundled JS
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
-import FaviconsWebpackPlugin from 'favicons-webpack-plugin'
 
 // * Load ENV Variables from the .env and .env.defaults files for use within webpack
 dotenv.config()
@@ -42,16 +41,6 @@ const Configuration: webpack.Configuration = {
     plugins: [
         ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
-        // new FaviconsWebpackPlugin({
-        //     // Your source logo (required)
-        //     logo: path.resolve(__dirname, 'src/images/logo.svg'),
-        //     // Enable caching and optionally specify the path to store cached data
-        //     // Note: disabling caching may increase build times considerably
-        //     cache: true,
-        //     inject: true,
-        //     mode: isDevelopment ? 'light' : 'webapp',
-        //     favicons: { orientation: 'portrait', start_url: '/' },
-        // }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
     ],
 

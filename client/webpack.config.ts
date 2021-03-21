@@ -41,16 +41,6 @@ const Configuration: webpack.Configuration = {
     plugins: [
         ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
-        // new FaviconsWebpackPlugin({
-        //     // Your source logo (required)
-        //     logo: path.resolve(__dirname, 'src/images/logo.svg'),
-        //     // Enable caching and optionally specify the path to store cached data
-        //     // Note: disabling caching may increase build times considerably
-        //     cache: true,
-        //     inject: true,
-        //     mode: isDevelopment ? 'light' : 'webapp',
-        //     favicons: { orientation: 'portrait', start_url: '/' },
-        // }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
     ],
 

@@ -67,6 +67,7 @@ jobs:
               if: steps.cache.outputs.cache-hit != 'true'
               run: npm ci
             - name: npm run build
+              if: steps.cache.outputs.cache-hit != 'true'
               run: npm run build --if-present
             - run: npm test
               env:

@@ -26,7 +26,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - name: Cache NPM dependencies
-              id: node-cache
+              id: cache
               uses: actions/cache@v2
               with:
                   path: |

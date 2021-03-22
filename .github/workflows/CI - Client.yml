@@ -30,8 +30,8 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                    '${{ GITHUB_WORKSPACE }}/client/node_modules'
-                    '${{ GITHUB_WORKSPACE }}/client/build'
+                    ${{ GITHUB_WORKSPACE }}/client/node_modules
+                    ${{ GITHUB_WORKSPACE }}/client/build
                   key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5

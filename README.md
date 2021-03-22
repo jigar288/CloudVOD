@@ -1,6 +1,7 @@
 # CloudVOD
 
-[![CI](https://github.com/jigar288/CloudVOD/workflows/CI/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACI)
+[![CI](https://github.com/jigar288/CloudVOD/workflows/CI-API/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACI-API)
+[![CI](https://github.com/jigar288/CloudVOD/workflows/CI-Client/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACI-Client)
 
 ## Table of contents
 

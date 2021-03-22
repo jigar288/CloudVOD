@@ -21,6 +21,10 @@ fi
 # Validate Test runner
 if [ $GITHUB_ACTOR ];then
     echo "This test is run by $GITHUB_ACTOR"
+    if [ "$GITHUB_ACTOR" = "dependabot[bot]" ];then
+        echo "Dependabot doesn't have access to secret, auto failed!!!"
+        exit 1
+    fi
 else
     echo "This test is run by unknown"
 fi

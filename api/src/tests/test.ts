@@ -19,6 +19,11 @@ const checkEnvValuesExistence = ( (config) => {
     }
 });
 
+if (process.env.GITHUB_ACTOR == "dependabot[bot]"){
+    console.log("Dependabot doesn't have access to secret, auto failed!!!")
+    process.exit(1)
+}
+
 checkEnvValuesExistence(azureAccountConfig);
 checkEnvValuesExistence(openIDConfig);
 checkEnvValuesExistence(videoDatabaseConfig);

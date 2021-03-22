@@ -30,9 +30,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                    'client/node_modules'
-                    'client/build'
-                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
+                    '${{ GITHUB_WORKSPACE }}/client/node_modules'
+                    '${{ GITHUB_WORKSPACE }}/client/build'
+                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('${{ GITHUB_WORKSPACE }}/.github/workflows/CI - Client.yml') }}-${{ hashFiles('${{ GITHUB_WORKSPACE }}/client/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:

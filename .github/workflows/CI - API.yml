@@ -56,9 +56,9 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: |
-                    'api/node_modules'
-                    'api/dist'
-                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('.github/workflows/CI - API.yml') }}-${{ hashFiles('api/package-lock.json') }}-${{ matrix.node-version }}
+                    ${{ GITHUB_WORKSPACE }}/api/node_modules'
+                    ${{ GITHUB_WORKSPACE }}/'api/dist'
+                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('${{ GITHUB_WORKSPACE }}/.github/workflows/CI - API.yml') }}-${{ hashFiles('${{ GITHUB_WORKSPACE }}/api/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:

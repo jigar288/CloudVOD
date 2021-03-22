@@ -29,7 +29,9 @@ jobs:
               uses: actions/cache@v1
               with:
                   path: 'client/node_modules'
-                  key: ${{ runner.OS }}-npm-cache-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
+                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
+                  restore-keys: |
+                    ${{ runner.OS }}-npm-cache-client-
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:

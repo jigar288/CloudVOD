@@ -55,8 +55,8 @@ jobs:
               id: cache-node-modules
               uses: actions/cache@v1
               with:
-                  path: 'node_modules'
-                  key: ${{ runner.OS }}-npm-cache-${{ hashFiles('package-lock.json') }}-${{ matrix.node-version }}
+                  path: 'api/node_modules'
+                  key: ${{ runner.OS }}-npm-cache-${{ hashFiles('api/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:

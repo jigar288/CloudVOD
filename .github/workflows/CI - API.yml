@@ -51,12 +51,22 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
+            - name: Cache NPM dependencies
+              id: cache
+              uses: actions/cache@v2
+              with:
+                  path: |
+                    api/node_modules
+                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('.github/workflows/CI - API.yml') }}-${{ hashFiles('api/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:
                   node-version: ${{ matrix.node-version }}
-            - run: npm ci
-            - run: npm run build --if-present
+            - name: npm ci
+              if: steps.cache.outputs.cache-hit != 'true'
+              run: npm ci
+            - name: npm run build
+              run: npm run build --if-present
             - run: npm test
               env:
                   # Pull environmental variable from Github

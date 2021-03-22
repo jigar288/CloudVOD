@@ -32,7 +32,7 @@ jobs:
                   path: |
                     'client/node_modules'
                     'client/build'
-                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
+                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:

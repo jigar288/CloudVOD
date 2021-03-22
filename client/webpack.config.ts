@@ -50,20 +50,7 @@ const Configuration: webpack.Configuration = {
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },
-            {
-                test: /\.(js|jsx|ts|tsx)$/,
-                exclude: /(node_modules)/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript'],
-                            plugins: [...(isDevelopment ? ['react-refresh/babel'] : [])],
-                        },
-                    },
-                    'ts-loader',
-                ],
-            },
+            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader', 'ts-loader'] },
         ],
     },
 }

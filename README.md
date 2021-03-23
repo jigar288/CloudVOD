@@ -7,6 +7,7 @@
 
 * [Azure Architecture](#azure-architecture)
 * [Encoding Workflow](#encoding-workflow)
+* [Database Entity Relationship Diagram](#database-entity-relationship-diagram)
 * [Instructions to run & test](#instructions-to-run--test)
 * [Links](#links)
 
@@ -23,13 +24,17 @@ This diagram details the process of uploading, encoding, and monitoring
 
 ![Encoding Workflow](resources/encoding-workflow.svg)
 
-## Instructions to run & test
+## Database Entity Relationship Diagram
+
+![Database Entity Relationship Diagram](resources/CloudVOD-Database-ER-diagram.svg)
+
+## Instructions to run & test (TODO: update this)
 
 1. Create a Microsoft Azure Account & create the Azure Media Service resource via setup wizard
 2. Run `npm install` in root dir
 3. Create a `.env` file based on `.env.example` in repo & replace values with azure account info
 4. Run `npm run watch` in root dir
-5. Go to `http://localhost:5000/api/az/file-uploader` in a web browser and upload a video file 
+5. Go to `http://localhost:5000/api/data/file-upload` in a web browser and upload a video file 
 
 ## Links
 

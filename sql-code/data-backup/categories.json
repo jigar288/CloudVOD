@@ -1,0 +1,62 @@
+[
+ {
+  "category_id": "1",
+  "category_name": "Film & Animation"
+ },
+ {
+  "category_id": "2",
+  "category_name": "Autos & Vehicles"
+ },
+ {
+  "category_id": "3",
+  "category_name": "Music"
+ },
+ {
+  "category_id": "4",
+  "category_name": "Pets & Animals"
+ },
+ {
+  "category_id": "5",
+  "category_name": "Sports"
+ },
+ {
+  "category_id": "6",
+  "category_name": "Travel & Events"
+ },
+ {
+  "category_id": "7",
+  "category_name": "Gaming"
+ },
+ {
+  "category_id": "8",
+  "category_name": "People & Blogs"
+ },
+ {
+  "category_id": "9",
+  "category_name": "Comedy"
+ },
+ {
+  "category_id": "10",
+  "category_name": "Entertainment"
+ },
+ {
+  "category_id": "11",
+  "category_name": "News & Politics"
+ },
+ {
+  "category_id": "12",
+  "category_name": "Howto & Style"
+ },
+ {
+  "category_id": "13",
+  "category_name": "Education"
+ },
+ {
+  "category_id": "14",
+  "category_name": "Science & Technology"
+ },
+ {
+  "category_id": "15",
+  "category_name": "Nonprofits & Activism"
+ }
+]

@@ -15,6 +15,7 @@ defaults:
 
 jobs:
     credential-guard:
+        if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -42,6 +43,7 @@ jobs:
                   DB_NAME: ${{ secrets.DB_NAME }}
                   DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
     node:
+        if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
 
         strategy:

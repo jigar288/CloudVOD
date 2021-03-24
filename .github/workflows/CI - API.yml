@@ -17,6 +17,7 @@ jobs:
     credential-guard:
         if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
+        timeout-minutes: 1
         steps:
             - uses: actions/checkout@v2
             - name: Credential-Guard
@@ -45,6 +46,7 @@ jobs:
     node:
         if: github.actor != 'dependabot[bot]'
         runs-on: ubuntu-latest
+        timeout-minutes: 3
 
         strategy:
             matrix:

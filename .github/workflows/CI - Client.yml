@@ -15,6 +15,7 @@ defaults:
 
 jobs:
     build:
+        if: github.actor != 'dependabot[bot]'
         name: build-client
         runs-on: ubuntu-latest
 

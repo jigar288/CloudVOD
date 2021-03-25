@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootActions } from '.'
 
 const initialState: { [action in RootActions]: boolean } = {
@@ -11,5 +11,12 @@ const initialState: { [action in RootActions]: boolean } = {
 export const slice = createSlice({
     name: 'loading',
     initialState,
-    reducers: {},
+    reducers: {
+        start: (state, action: PayloadAction<RootActions>) => {
+            state[action.payload] = true
+        },
+        stop: (state, action: PayloadAction<RootActions>) => {
+            state[action.payload] = false
+        },
+    },
 })

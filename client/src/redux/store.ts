@@ -2,15 +2,19 @@ import { configureStore, Action } from '@reduxjs/toolkit'
 import { combineReducers } from 'redux'
 import { ThunkAction } from 'redux-thunk'
 
-import { DataRedux, UserRedux, ErrorRedux, LoadingRedux, SanityRedux } from '.'
+import * as DataRedux from './data'
+import * as SanityRedux from './sanity'
+import * as UserRedux from './user'
+import * as ErrorRedux from './error'
+import * as LoadingRedux from './loading'
 
 const reducer = combineReducers({
     // here we will be adding reducers
     data: DataRedux.slice.reducer,
     user: UserRedux.slice.reducer,
+    sanity: SanityRedux.slice.reducer,
     error: ErrorRedux.slice.reducer,
     loading: LoadingRedux.slice.reducer,
-    sanity: SanityRedux.slice.reducer,
 })
 
 export const store = configureStore({

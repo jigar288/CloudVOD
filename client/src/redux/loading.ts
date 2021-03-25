@@ -6,6 +6,7 @@ const initialState: { [action in RootActions]: boolean } = {
     RETRIEVE_USER: false,
     RETRIEVE_VIDEOS: false,
     CHECK_SERVICE: false,
+    UPLOAD_VIDEO: false,
 }
 
 export const slice = createSlice({

@@ -6,10 +6,10 @@ export const slice = createSlice({
     initialState: {} as { [action in RootActions]: string | undefined },
     reducers: {
         remove: (state, action: PayloadAction<RootActions>) => {
-            state[action.payload] = undefined
+            return { ...state, [action.payload]: undefined }
         },
         set: (state, action: PayloadAction<{ err: string; action: RootActions }>) => {
-            state[action.payload.action] = action.payload.err
+            return { ...state, [action.payload.action]: action.payload.err }
         },
     },
 })

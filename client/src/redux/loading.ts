@@ -14,10 +14,10 @@ export const slice = createSlice({
     initialState,
     reducers: {
         start: (state, action: PayloadAction<RootActions>) => {
-            state[action.payload] = true
+            return { ...state, [action.payload]: true }
         },
         stop: (state, action: PayloadAction<RootActions>) => {
-            state[action.payload] = false
+            return { ...state, [action.payload]: false }
         },
     },
 })

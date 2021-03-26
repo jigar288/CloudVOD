@@ -4,5 +4,5 @@ export type User = {
     given_name: string
     family_name: string
     user_id: string
-    picture_url: string
+    picture: string
 }

@@ -1,9 +1,9 @@
 export type Video = {
     id: string
     title: string
-    desc: string
+    description: string
     url: string
-    upload: string
+    upload_date: string
     category_names: string[]
     user_id: string
     user_email: string

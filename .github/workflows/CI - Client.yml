@@ -16,7 +16,6 @@ defaults:
 jobs:
     build:
         timeout-minutes: 3
-        if: github.actor != 'dependabot[bot]'
         name: build-client
         runs-on: ubuntu-latest
 
@@ -26,6 +25,9 @@ jobs:
                 # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
+            - name: Fail if run by dependabot
+              if: github.actor == 'dependabot[bot]'
+              run: exit 1
             - uses: actions/checkout@v2
             - name: Cache NPM dependencies
               id: cache

@@ -1,5 +1,6 @@
 import * as path from 'path'
 import * as webpack from 'webpack'
+import * as DevServer from 'webpack-dev-server'
 import dotenv from 'dotenv-defaults'
 import Dotenv from 'dotenv-webpack' // Support for ENV values
 import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
@@ -12,7 +13,11 @@ dotenv.config()
 // * Check if current mode is development
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
-const Configuration: webpack.Configuration = {
+interface Configuration extends webpack.Configuration {
+    devServer: DevServer.Configuration
+}
+
+const Configuration: Configuration = {
     mode: isDevelopment ? 'development' : 'production',
     devtool: isDevelopment ? 'eval-source-map' : false,
 

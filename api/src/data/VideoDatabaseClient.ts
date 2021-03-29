@@ -95,12 +95,12 @@ class VideoDatabaseClient {
          * @param outputAssetName The output asset from azure media service that contains streaming files 
          * @returns DBQueryResponse
          */
-        create: async (videoTitle: string, videoDescription: string, outputAssetName: string): Promise<DBQueryResponse> => {
+        create: async (videoTitle: string, videoDescription: string, outputAssetName: string, categoryID: number, userEmail: string, userName: string, uploadDate: string): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
 
             try{
-                const insertQuery = 'CALL add_initial_video_metadata($1, $2, $3);'
-                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName]);
+                const insertQuery = 'CALL create_initial_video_entry($1, $2, $3, $4, $5, $6, $7);'
+                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName, uploadDate, categoryID, userEmail, userName]);
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success adding video metadata to database'
             }catch(error){
@@ -135,6 +135,31 @@ class VideoDatabaseClient {
                 queryResult.message = message
             }
     
+            return queryResult;
+        }
+    }
+
+    public videoCategories = {
+        /**
+         * 
+         * Get list of all the categories for video media
+         * 
+         * @returns DBQueryResponse
+         */
+        get: async (): Promise<DBQueryResponse> => {
+            const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
+
+            try{
+                const getCategoriesQuery = 'SELECT * FROM get_categories()';
+                queryResult.data = (await this.#videoDatabaseClient.query(getCategoriesQuery)).rows
+                queryResult.wasRequestSuccessful = true;
+                queryResult.message = 'Success retrieving video data'
+            }catch(error){
+                const message = `Error trying to get categories`
+                console.error(message)
+                queryResult.message = message
+            }
+
             return queryResult;
         }
     }

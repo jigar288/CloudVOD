@@ -26,7 +26,7 @@ This diagram details the process of uploading, encoding, and monitoring
 
 ## Database Entity Relationship Diagram
 
-![Database Entity Relationship Diagram](resources/CloudVOD-Database-ER-diagram.svg)
+![Database Entity Relationship Diagram](resources/CloudVOD-Database-ER-diagram-V2.svg)
 
 ## Instructions to run & test (TODO: update this)
 

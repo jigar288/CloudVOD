@@ -10,11 +10,13 @@ export class Auth extends Controller {
     }
     @Get('/login')
     async login(req: OpenidRequest, res: OpenidResponse): Promise<void> {
-        res.oidc.login({ returnTo: '/api/user/' })
+        const returnTo = typeof req.query.return === 'string' ? req.query.return : '/api/user/'
+        res.oidc.login({ returnTo })
     }
 
     @Get('/logout')
     async logout(req: OpenidRequest, res: OpenidResponse): Promise<void> {
-        res.oidc.logout({ returnTo: '/api/user/' })
+        const returnTo = typeof req.query.return === 'string' ? req.query.return : '/api/user/'
+        res.oidc.logout({ returnTo })
     }
 }

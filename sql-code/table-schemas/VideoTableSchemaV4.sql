@@ -2,12 +2,17 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 DROP TABLE IF EXISTS video;
 
 CREATE TABLE video(
-    video_id SERIAL PRIMARY KEY NOT NULL,
-    video_title VARCHAR (100) NOT NULL,
-    video_description VARCHAR (5000),
+    id SERIAL PRIMARY KEY,
+    title VARCHAR (100) NOT NULL,
+    description VARCHAR (5000),
     streaming_url VARCHAR (160) UNIQUE,
     output_asset_name UUID UNIQUE NOT NULL,
     upload_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    category_id INT REFERENCES category(category_id),
-    user_id INT REFERENCES users(user_id)
+    is_public BOOLEAN NOT NULL DEFAULT TRUE,
+    thumbnail_url VARCHAR (115) UNIQUE,
+    user_id INT REFERENCES users(id)
 );
+
+/*
+    Note: when returning all video metadata - use the videoID to make separate query to the video_categories table to get associated categories
+*/

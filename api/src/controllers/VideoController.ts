@@ -25,18 +25,8 @@ export class VideoController extends Controller {
 
         const videoTitle = _req.body.videoTitle
         const videoDescription = _req.body.videoDescription
-        const filename = _req.file.originalname;        
-        const userEmail = _req.body.userEmail;
-        const userName = _req.body.userName;                
-        const datestamp = new Date(); //TODO: consider using date from client for better accuracy but will need to validate it
-        const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()}-${datestamp.getDate()}` // sql DATE format: yyyy-mm-dd
-
-        let categoryID = _req.body.categoryID
-        if(typeof categoryID != 'number')
-          categoryID = parseInt(categoryID);
+        const filename = _req.file.originalname;
         
-        console.log(_req.body)
-
         try{
             //* transfering file via buffers & streams for smoother upload process
             const fileReadableStream = bufferToStream(_req.file.buffer)                                 
@@ -47,10 +37,11 @@ export class VideoController extends Controller {
             
             //* create streaming locator
             const outputAssetName = (jobSubmissionResult.outputs[0] as JobOutputAsset).assetName;
-            await this.#mediaClient.streaming_locator.create(outputAssetName) // !FIXME: do something w/ response             
+            const createLocatorResponse = await this.#mediaClient.streaming_locator.create(outputAssetName)
 
-            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName, categoryID, userEmail, userName, uploadDate);                  
+            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName);                  
             console.info(dbWriteResponse)            
+
         }catch(error){              
             const message = `There was a problem processing the file: ${error}`
             console.error(message)
@@ -60,19 +51,8 @@ export class VideoController extends Controller {
 
         this.ok(res);        
     }
-
-    @Get('/categories')
-    async getCategories(_req: Request, res: Response): Promise<void> { 
-      const categoriesData = await this.#videoDBClient.videoCategories.get();
-      
-      if(categoriesData.wasRequestSuccessful)
-        this.ok(res, categoriesData) 
-      else
-        this.fail(res, categoriesData.message)
-    }
     
-    // ! FIXME: require auth for file uploads
-    @Get('/file-upload')
+    @Get('/file-upload', [requiresAuth()])
     async file_uploader(_req: Request, res: Response): Promise<void> {
         res.writeHead(200, { 'Content-Type': 'text/html' })
         res.write(`
@@ -83,33 +63,10 @@ export class VideoController extends Controller {
           <h2>Upload Video</h2>
           
           <form action="video" method="post" enctype="multipart/form-data">
-            
             <label for="videoTitle">Video Title:</label><br>
             <input type="text" id="videoTitle" name="videoTitle" value=""><br>
-
             <label for="videoDescription">Video Description:</label><br>
-            <input type="text" id="videoDescription" name="videoDescription" value=""><br>
-
-            <label for="categoryID">Category ID:</label><br>
-            <input type="text" id="categoryID" name="categoryID" value="">
-
-            <br>
-
-
-            <label for="userEmail">userEmail:</label><br>
-            <input type="text" id="userEmail" name="userEmail" value="">               
-            <br>
-
-
-            <label for="userName">userName:</label><br>
-            <input type="text" id="userName" name="userName" value="">   
-            
-            <br>
-
-
-
-
-
+            <input type="text" id="videoDescription" name="videoDescription" value="">
             <br>
             <br>
             <input type="file" name="filetoupload">

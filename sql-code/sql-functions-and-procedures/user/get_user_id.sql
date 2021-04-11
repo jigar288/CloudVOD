@@ -1,16 +1,15 @@
 -- Function to get user id. Returns NULL if it doesn't exist
 
-DROP FUNCTION IF EXISTS get_user_id;
+DROP FUNCTION IF EXISTS get_user_id(user_email VARCHAR);
 
-CREATE FUNCTION get_user_id(given_user_email VARCHAR)
+CREATE FUNCTION get_user_id(user_email VARCHAR)
 RETURNS INT
+LANGUAGE plpgsql
 AS $$
 DECLARE associated_user_id INTEGER;
 BEGIN    
-    SELECT user_id INTO associated_user_id FROM public.users WHERE user_email=given_user_email;
+    SELECT id INTO associated_user_id FROM public.users WHERE email=user_email;
     RETURN associated_user_id;
 END; $$
-
-LANGUAGE 'plpgsql';
 
 -- SELECT * FROM get_user_id('jigar@uic.edu');

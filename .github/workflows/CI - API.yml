@@ -16,7 +16,11 @@ defaults:
 jobs:
     credential-guard:
         runs-on: ubuntu-latest
+        timeout-minutes: 1
         steps:
+            - name: Fail if run by dependabot
+              if: github.actor == 'dependabot[bot]'
+              run: exit 1
             - uses: actions/checkout@v2
             - name: Credential-Guard
               run: ./src/tests/credential-guard.sh
@@ -43,6 +47,7 @@ jobs:
                   DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
     node:
         runs-on: ubuntu-latest
+        timeout-minutes: 3
 
         strategy:
             matrix:
@@ -50,10 +55,13 @@ jobs:
                 # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
+            - name: Fail if run by dependabot
+              if: github.actor == 'dependabot[bot]'
+              run: exit 1
             - uses: actions/checkout@v2
             - name: Cache NPM dependencies
               id: cache
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   path: |
                     api/node_modules

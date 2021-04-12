@@ -3,8 +3,8 @@ import { AiOutlineLogin, AiOutlineLogout, AiOutlineUpload, AiOutlineVideoCamera 
 import { NavbarPath } from '../types'
 
 export const paths: NavbarPath[] = [
-    { name: 'Videos', icon: <AiOutlineVideoCamera />, authenticated: false, href: '/' },
-    { name: 'Upload', icon: <AiOutlineUpload />, authenticated: true, href: '/' },
-    { name: 'Login', icon: <AiOutlineLogin />, authenticated: true, href: '/' },
-    { name: 'Sign Off', icon: <AiOutlineLogout />, authenticated: true, href: '/' },
+    { name: 'Videos', icon: <AiOutlineVideoCamera />, href: '/' },
+    { name: 'Upload', icon: <AiOutlineUpload />, authenticated: true, href: '/upload' },
+    { name: 'Login', icon: <AiOutlineLogin />, authenticated: false, href: '/', external: true },
+    { name: 'Sign Off', icon: <AiOutlineLogout />, authenticated: true, href: '/', external: true },
 ]

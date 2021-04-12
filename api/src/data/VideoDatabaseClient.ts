@@ -1,5 +1,6 @@
 import pg from 'pg'
 import { DBQueryResponse } from 'types'
+import Video from '../types/Video'
 
 class VideoDatabaseClient {
     
@@ -87,20 +88,19 @@ class VideoDatabaseClient {
 
         /**
          * 
-         * Creates video meatadata by inserting provided information into the database. 
+         * Creates video metadata by inserting provided information into the database. 
          * The streaming url when its available using another method from this class
          * 
-         * @param videoTitle
-         * @param videoDescription
-         * @param outputAssetName The output asset from azure media service that contains streaming files 
+         * @param Video object consisting of video related metadata info
          * @returns DBQueryResponse
          */
-        create: async (videoTitle: string, videoDescription: string, outputAssetName: string): Promise<DBQueryResponse> => {
+        create: async (videoTitle: string, videoDescription: string, outputAssetName: string, uploadDate: string, categories: number[], userEmail: string, userProfileURL: string, userName: string, isPublic: boolean): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
 
+
             try{
-                const insertQuery = 'CALL add_initial_video_metadata($1, $2, $3);'
-                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName]);
+                const insertQuery = 'CALL create_initial_video_entry($1, $2, $3, $4, $5, $6, $7, $8, $9);'
+                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName, uploadDate, categories, userEmail, userProfileURL, userName, isPublic]);
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success adding video metadata to database'
             }catch(error){
@@ -135,6 +135,31 @@ class VideoDatabaseClient {
                 queryResult.message = message
             }
     
+            return queryResult;
+        }
+    }
+    
+    public videoCategories = {
+        /**
+         * 
+         * Get list of all the categories for video media
+         * 
+         * @returns DBQueryResponse
+         */
+        get: async (): Promise<DBQueryResponse> => {
+            const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
+
+            try{
+                const getCategoriesQuery = 'SELECT * FROM get_categories()';
+                queryResult.data = (await this.#videoDatabaseClient.query(getCategoriesQuery)).rows
+                queryResult.wasRequestSuccessful = true;
+                queryResult.message = 'Success retrieving video data'
+            }catch(error){
+                const message = `Error trying to get categories`
+                console.error(message)
+                queryResult.message = message
+            }
+
             return queryResult;
         }
     }

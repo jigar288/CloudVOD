@@ -6,7 +6,7 @@ export class Auth extends Controller {
     // * Primarily for test in deployment, and health checks
     @Get('/')
     async user(req: OpenidRequest, res: OpenidResponse): Promise<void> {
-        res.status(200).send('<a href="login">Login</a> <a href="logout">Logout</a><br>' + JSON.stringify(req.oidc.user))
+        res.status(200).send('<a href="/api/user/login">Login</a> <a href="/api/user/logout">Logout</a><br>' + JSON.stringify(req.oidc.user))
     }
     @Get('/login')
     async login(req: OpenidRequest, res: OpenidResponse): Promise<void> {

@@ -4,7 +4,9 @@ import { Controller, Get, Post } from './'
 import bufferToStream from 'into-stream'
 import { JobOutputAsset } from '@azure/arm-mediaservices/esm/models'
 import VideoDatabaseClient from 'data/VideoDatabaseClient'
-import { requiresAuth } from 'express-openid-connect'
+import { requiresAuth, OpenidRequest, OpenidResponse } from 'express-openid-connect'
+import { User } from '../types/User'
+import { Video } from '../types/Video'
 
 
 export class VideoController extends Controller {
@@ -18,17 +20,54 @@ export class VideoController extends Controller {
         this.#videoDBClient = videoDBClient
     }
 
+
+    // ! FIXME: only for testing purposes - add this to file upload route later
+    @Get('/upload-date')
+    async user(req: OpenidRequest, res: OpenidResponse): Promise<void> {      
+      
+      const datestamp = new Date();
+      console.info(datestamp)
+
+      const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
+      console.info(`uploadDate : ${uploadDate}`)
+      
+      res.status(200).send('done')
+    }    
+
     // ! FIXME: only authenticated users should be able to upload files
+    // TODO: look at auth routes for example
     // TODO: move business logic to its own layer?
     @Post('/video')
-    async upload_video_file(_req: Request, res: Response): Promise<void> {
+    async upload_video_file(_req: OpenidRequest, res: OpenidResponse): Promise<void> {
 
-        const videoTitle = _req.body.videoTitle
-        const videoDescription = _req.body.videoDescription
-        const filename = _req.file.originalname;
+        const userInfo = _req.oidc.user as User;
+        if(!userInfo){
+          this.clientError(res);
+          return;
+        }
+
+        const userEmail = userInfo.email;
+        const userName = userInfo.name
+        const userProfileURL = userInfo.picture;
+                
+        const filename = _req.file.originalname;                              
+        const datestamp = new Date(); //* assuming client req hits the closest data center
+
+        //* need to add +1 for month since .getMonth() subtracts 1 to represent (0-11 month range)
+        const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
+
+        const videoTitle = _req.body.title
+        const videoDescription = _req.body.description
+        const isPublic = true;
+        const categories = [3,1,2] 
+
+        //!FIXME: get info from client later
+        // const categoryIDs = _req.body.categories 
+        // const isPublic = _req.body.is_public;
         
+                
         try{
-            //* transfering file via buffers & streams for smoother upload process
+            //* transferring file via buffers & streams for smoother upload process
             const fileReadableStream = bufferToStream(_req.file.buffer)                                 
             const inputAsset = await this.#mediaClient.video.upload(filename, fileReadableStream);
             
@@ -37,11 +76,10 @@ export class VideoController extends Controller {
             
             //* create streaming locator
             const outputAssetName = (jobSubmissionResult.outputs[0] as JobOutputAsset).assetName;
-            const createLocatorResponse = await this.#mediaClient.streaming_locator.create(outputAssetName)
+            await this.#mediaClient.streaming_locator.create(outputAssetName) // !FIXME: do something w/ response             
 
-            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName);                  
+            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName, uploadDate, categories, userEmail, userProfileURL, userName, isPublic);
             console.info(dbWriteResponse)            
-
         }catch(error){              
             const message = `There was a problem processing the file: ${error}`
             console.error(message)
@@ -51,8 +89,19 @@ export class VideoController extends Controller {
 
         this.ok(res);        
     }
+
+    @Get('/categories')
+    async getCategories(_req: Request, res: Response): Promise<void> { 
+      const categoriesData = await this.#videoDBClient.videoCategories.get();
+      
+      if(categoriesData.wasRequestSuccessful)
+        this.ok(res, categoriesData) 
+      else
+        this.fail(res, categoriesData.message)
+    }
     
-    @Get('/file-upload', [requiresAuth()])
+    // ! FIXME: require auth for file uploads
+    @Get('/file-upload', [requiresAuth()] )
     async file_uploader(_req: Request, res: Response): Promise<void> {
         res.writeHead(200, { 'Content-Type': 'text/html' })
         res.write(`
@@ -63,12 +112,16 @@ export class VideoController extends Controller {
           <h2>Upload Video</h2>
           
           <form action="video" method="post" enctype="multipart/form-data">
-            <label for="videoTitle">Video Title:</label><br>
-            <input type="text" id="videoTitle" name="videoTitle" value=""><br>
-            <label for="videoDescription">Video Description:</label><br>
-            <input type="text" id="videoDescription" name="videoDescription" value="">
-            <br>
-            <br>
+            
+            <label for="title">Video Title:</label><br>
+            <input type="text" id="title" name="title" value=""><br>
+
+            <label for="description">Video Description:</label><br>
+            <input type="text" id="description" name="description" value=""><br>
+
+            <label for="categoryID">Category ID:</label><br>
+            <input type="text" id="categoryID" name="categoryID" value="">
+            <br><br><br>
             <input type="file" name="filetoupload">
             <br>
             <br>

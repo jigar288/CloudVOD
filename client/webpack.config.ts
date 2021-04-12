@@ -34,7 +34,7 @@ const Configuration: Configuration = {
     entry: { bundle: path.join(__dirname, 'src/index.tsx') },
 
     // * Use Terser Plugin for minifying the bundle and cache output
-    optimization: { minimize: true, minimizer: [new TerserPlugin()] },
+    optimization: { minimize: true, minimizer: [new TerserPlugin()], splitChunks: { chunks: 'all' } },
     cache: true,
 
     output: {

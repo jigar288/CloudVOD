@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Navbar from '../Navbar'
-import { HashRouter, Route } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import { paths, routes } from '../../utilities'
 import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { check_service } from '../../redux/sanity'
@@ -21,15 +21,19 @@ export const App = () => {
 
             {JSON.stringify(user)}
             {JSON.stringify(sanity)}
-            {routes.map(({ path, exact, component, authenticated, dependent }, idx) => {
-                const displaySanityError = dependent && !sanity
-                const displayAuthError = !displaySanityError && authenticated && user === null
+            <React.Suspense fallback={<></>}>
+                <Switch>
+                    {routes.map(({ path, exact, component, authenticated, dependent }, idx) => {
+                        const displaySanityError = dependent && !sanity
+                        const displayAuthError = !displaySanityError && authenticated && user === null
 
-                // TODO: Fix which component to display
-                const displayComponent = displaySanityError ? component : displayAuthError ? component : component
+                        // TODO: Fix which component to display
+                        const displayComponent = displaySanityError ? component : displayAuthError ? component : component
 
-                return <Route path={path} exact={exact} component={displayComponent} key={idx} />
-            })}
+                        return <Route path={path} exact={exact} component={displayComponent} key={idx} />
+                    })}
+                </Switch>
+            </React.Suspense>
         </HashRouter>
     )
 }

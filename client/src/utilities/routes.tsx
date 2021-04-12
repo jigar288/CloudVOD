@@ -1,4 +1,6 @@
+import { lazily } from 'react-lazily'
 import { AppRoute } from '../types'
+const { VideosPage, AboutPage, VideoPage, UploadPage } = lazily(() => import('../pages'))
 
 export enum APP_ROUTES {
     VIDEOS_PAGE = '/',
@@ -8,8 +10,8 @@ export enum APP_ROUTES {
 }
 
 export const routes: AppRoute[] = [
-    { path: APP_ROUTES.VIDEOS_PAGE, exact: true, component: undefined, dependent: true },
-    { path: APP_ROUTES.ABOUT_PAGE, component: undefined },
-    { path: APP_ROUTES.VIDEO_PAGE, component: undefined, dependent: true },
-    { path: APP_ROUTES.UPLOAD_PAGE, component: undefined, authenticated: true, dependent: true },
+    { path: APP_ROUTES.VIDEOS_PAGE, exact: true, component: VideosPage, dependent: true },
+    { path: APP_ROUTES.ABOUT_PAGE, component: AboutPage },
+    { path: APP_ROUTES.VIDEO_PAGE, component: VideoPage, dependent: true },
+    { path: APP_ROUTES.UPLOAD_PAGE, component: UploadPage, authenticated: true, dependent: true },
 ]

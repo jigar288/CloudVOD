@@ -45,25 +45,30 @@ export class VideoController extends Controller {
           this.clientError(res);
           return;
         }
-
-        const userEmail = userInfo.email;
-        const userName = userInfo.name
-        const userProfileURL = userInfo.picture;
                 
         const filename = _req.file.originalname;                              
-        const datestamp = new Date(); //* assuming client req hits the closest data center
+        const datestamp = new Date(); //* assuming client req hits a local data center
 
         //* need to add +1 for month since .getMonth() subtracts 1 to represent (0-11 month range)
         const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
 
-        const videoTitle = _req.body.title
-        const videoDescription = _req.body.description
         const isPublic = true;
         const categories = [3,1,2] 
 
         //!FIXME: get info from client later
         // const categoryIDs = _req.body.categories 
         // const isPublic = _req.body.is_public;
+
+        const videoMetadata: Video = {
+          title: _req.body.title,
+          description: _req.body.description,
+          upload_date: uploadDate,
+          categories: categories,
+          user_email: userInfo.email,
+          user_profile_url: userInfo.picture,
+          user_name: userInfo.name,
+          is_public: isPublic
+        }
         
                 
         try{
@@ -75,10 +80,10 @@ export class VideoController extends Controller {
             const jobSubmissionResult = await this.#mediaClient.jobs.create(inputAsset);            
             
             //* create streaming locator
-            const outputAssetName = (jobSubmissionResult.outputs[0] as JobOutputAsset).assetName;
-            await this.#mediaClient.streaming_locator.create(outputAssetName) // !FIXME: do something w/ response             
+            videoMetadata.output_asset_name = (jobSubmissionResult.outputs[0] as JobOutputAsset).assetName;
+            await this.#mediaClient.streaming_locator.create(videoMetadata.output_asset_name) // !FIXME: do something w/ response             
 
-            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoTitle, videoDescription , outputAssetName, uploadDate, categories, userEmail, userProfileURL, userName, isPublic);
+            const dbWriteResponse = await this.#videoDBClient.videoMetadata.create(videoMetadata);
             console.info(dbWriteResponse)            
         }catch(error){              
             const message = `There was a problem processing the file: ${error}`

@@ -1,6 +1,7 @@
 import pg from 'pg'
 import { DBQueryResponse } from 'types'
-import Video from '../types/Video'
+import { Video } from '../types/Video'
+
 
 class VideoDatabaseClient {
     
@@ -94,17 +95,19 @@ class VideoDatabaseClient {
          * @param Video object consisting of video related metadata info
          * @returns DBQueryResponse
          */
-        create: async (videoTitle: string, videoDescription: string, outputAssetName: string, uploadDate: string, categories: number[], userEmail: string, userProfileURL: string, userName: string, isPublic: boolean): Promise<DBQueryResponse> => {
+        create: async (videoMetadata: Video): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
-
 
             try{
                 const insertQuery = 'CALL create_initial_video_entry($1, $2, $3, $4, $5, $6, $7, $8, $9);'
-                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName, uploadDate, categories, userEmail, userProfileURL, userName, isPublic]);
+                await this.#videoDatabaseClient.query(insertQuery, 
+                    [videoMetadata.title, videoMetadata.description, videoMetadata.output_asset_name, videoMetadata.upload_date,
+                     videoMetadata.categories, videoMetadata.user_email, videoMetadata.user_profile_url, videoMetadata.user_name, videoMetadata.is_public]
+                );
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success adding video metadata to database'
             }catch(error){
-                const message = `Error trying to add video metadata for assetName ${outputAssetName}. Error: ${error}`
+                const message = `Error trying to add video metadata for assetName ${videoMetadata.output_asset_name}. Error: ${error}`
                 console.error(message)
                 queryResult.message = message
             }        

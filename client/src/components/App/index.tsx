@@ -17,7 +17,7 @@ export const App = () => {
 
     return (
         <HashRouter>
-            <Navbar paths={paths} />
+            <Navbar paths={paths(sanity)} />
 
             {JSON.stringify(user)}
             {JSON.stringify(sanity)}

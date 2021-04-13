@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import Navbar from '../Navbar'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { paths, routes } from '../../utilities'

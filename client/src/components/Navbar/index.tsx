@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { chakra, Box, Flex, HStack, Button, useDisclosure, VStack, IconButton, Avatar } from '@chakra-ui/react'
 import { AiOutlineMenu } from 'react-icons/ai'
 import { NavbarProps } from '../../types'

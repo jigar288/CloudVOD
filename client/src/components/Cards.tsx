@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { chakra, Box, Image, Flex, useColorModeValue, Link, ChakraProvider } from '@chakra-ui/react'
 
 const Cards = (props: { title: string; thumbnail: string; channel: string; channelProfileImg: string; date: string; description: string }) => {

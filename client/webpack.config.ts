@@ -34,7 +34,7 @@ const Configuration: Configuration = {
     entry: { bundle: path.join(__dirname, 'src/index.tsx') },
 
     // * Use Terser Plugin for minifying the bundle and cache output
-    optimization: { minimize: true, minimizer: [new TerserPlugin()], splitChunks: { chunks: 'all' } },
+    optimization: { minimize: true, minimizer: [new TerserPlugin()], splitChunks: { chunks: 'all' }, usedExports: true },
     cache: true,
 
     output: {
@@ -55,7 +55,7 @@ const Configuration: Configuration = {
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },
-            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader', 'ts-loader'] },
+            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader'] },
         ],
     },
 }

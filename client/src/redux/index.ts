@@ -1,1 +1,2 @@
-export { store, RootActionTypes, RootState, AppDispatch, AppThunk, RootActions } from './store'
+export { store, RootActionTypes } from './store'
+export type { RootState, AppDispatch, AppThunk, RootActions } from './store'

@@ -5,6 +5,7 @@ import { paths, routes } from '../../utilities'
 import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { check_service } from '../../redux/sanity'
 import { authorize } from '../../redux/user'
+import { get_categories, get_videos } from '../../redux/data'
 
 export const App = () => {
     const dispatch = useAppDispatch()
@@ -13,11 +14,13 @@ export const App = () => {
     React.useEffect(() => {
         dispatch(check_service())
         dispatch(authorize())
+        dispatch(get_categories())
+        dispatch(get_videos())
     }, [])
 
     return (
         <HashRouter>
-            <Navbar paths={paths(sanity)} />
+            <Navbar paths={paths(!process.env.DEV_DATA)} />
 
             {JSON.stringify(user)}
             {JSON.stringify(sanity)}

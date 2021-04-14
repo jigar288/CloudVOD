@@ -1,6 +1,6 @@
-import * as path from 'path'
-import * as webpack from 'webpack'
-import * as DevServer from 'webpack-dev-server'
+import path from 'path'
+import webpack from 'webpack'
+import DevServer from 'webpack-dev-server'
 import dotenv from 'dotenv-defaults'
 import Dotenv from 'dotenv-webpack' // Support for ENV values
 import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
@@ -44,18 +44,18 @@ const Configuration: Configuration = {
     },
 
     plugins: [
-        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
+        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
     ],
 
     module: {
         rules: [
-            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },
-            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader'] },
+            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader'], sideEffects: false },
         ],
     },
 }

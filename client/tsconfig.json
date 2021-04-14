@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es5" /* Specify ECMAScript target version */,
-        "sourceMap": true,
+        "target": "esnext" /* Specify ECMAScript target version */,
+        "baseUrl": "src",
+        "sourceMap": false,
         "lib": [
             "dom",
             "dom.iterable",
@@ -9,10 +10,11 @@
         ],
         "allowJs": true,
         "skipLibCheck": true,
-        "esModuleInterop": true,
+        "esModuleInterop": false,
         "allowSyntheticDefaultImports": true,
         "strict": true,
         "forceConsistentCasingInFileNames": false,
+        "module": "esnext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "jsx": "react",

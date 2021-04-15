@@ -28,6 +28,7 @@ const Configuration: Configuration = {
         hot: true,
         historyApiFallback: true,
         open: true,
+        openPage: 'http://localhost:3000',
     },
 
     // * Support all JS and TS file types and start at src/index.tsx
@@ -48,7 +49,7 @@ const Configuration: Configuration = {
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
         ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
-        new BundleAnalyzerPlugin({ analyzerMode: 'static' }),
+        new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
     ],
 
     module: {

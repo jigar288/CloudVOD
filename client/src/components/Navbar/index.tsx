@@ -3,7 +3,7 @@ import { chakra, Box, Flex, HStack, Button, useDisclosure, VStack, IconButton, A
 import { AiOutlineMenu } from 'react-icons/ai'
 import { NavbarProps } from '../../types'
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '../../redux/store'
+import { useAppSelector } from '../../state'
 //import Logo from "components/navbar/logo"; //TODO
 
 const Navbar = (props: NavbarProps) => {

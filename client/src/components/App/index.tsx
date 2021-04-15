@@ -2,10 +2,10 @@ import React from 'react'
 import Navbar from '../Navbar'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { paths, routes } from '../../utilities'
-import { useAppDispatch, useAppSelector } from '../../redux/store'
-import { check_service } from '../../redux/sanity'
-import { authorize } from '../../redux/user'
-import { get_categories, get_videos } from '../../redux/data'
+import { useAppDispatch, useAppSelector } from '../../state'
+import { check_service } from '../../state/sanity'
+import { authorize } from '../../state/user'
+import { get_categories, get_videos } from '../../state/data'
 
 export const App = () => {
     const dispatch = useAppDispatch()

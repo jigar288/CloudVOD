@@ -1,6 +1,6 @@
 import React from 'react'
 import { chakra, Box, Select, Flex, Heading, Text, Stack, FormControl, FormLabel, Input, InputGroup, FormHelperText, Textarea, Icon, Button, VisuallyHidden } from '@chakra-ui/react'
-import { useAppSelector } from '../redux/store'
+import { useAppSelector } from '../state'
 import { useState } from 'react'
 import { Category } from '../types'
 

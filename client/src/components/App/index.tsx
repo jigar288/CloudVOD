@@ -22,8 +22,6 @@ export const App = () => {
         <HashRouter>
             <Navbar paths={paths(!process.env.DEV_DATA)} />
 
-            {JSON.stringify(user)}
-            {JSON.stringify(sanity)}
             <React.Suspense fallback={<></>}>
                 <Switch>
                     {routes.map(({ path, exact, component, authenticated, dependent }, idx) => {

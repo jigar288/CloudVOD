@@ -4,11 +4,10 @@ import VideoPlayer from '../VideoPlayer'
 import { Video } from '../../types'
 import { useAppSelector } from '../../state'
 
-
 const VideoView = (props: { videoData: Video }) => {
     const { user } = useAppSelector((state) => state)
     // Check for permission
-    if (!props.videoData.is_public && user == null) {
+    if (!props.videoData.is_public && user === null) {
         return <>Permission Denied</>
     }
     return (

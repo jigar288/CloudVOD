@@ -3,7 +3,7 @@ import type { Config } from '@jest/types'
 
 // Sync object
 const config: Config.InitialOptions = {
-    setupFilesAfterEnv: [path.resolve(__dirname, 'test.setup.ts')],
+    setupFilesAfterEnv: [path.resolve(__dirname, 'src/tests/test.setup.ts')],
     verbose: true,
 }
 export default config

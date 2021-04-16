@@ -318,7 +318,7 @@ class MediaClient {
     // ? should this be moved elsewhere
     streaming_urls = {
         /**
-         * ! FIXME: return type of streaming protorol w/ url (HLS, smooth streaming, etc)
+         * ! FIXME: return type of streaming protocol w/ url (HLS, smooth streaming, etc)
          * gets a list of streaming urls for viewing VOD using video players
          * 
          * @param outputAssetName The name of the output asset 

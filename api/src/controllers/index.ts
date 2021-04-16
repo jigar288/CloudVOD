@@ -102,7 +102,7 @@ export abstract class Controller {
     }
 
     public clientError(response: Response, message?: string): void {
-        Controller.jsonResponse(response, 400, message ? message : 'Unauthorized')
+        Controller.jsonResponse(response, 400, message ? message : 'Bad Request')
     }
 
     public unauthorized(response: Response, message?: string): void {

@@ -1,5 +1,7 @@
 import pg from 'pg'
 import { DBQueryResponse } from 'types'
+import { Video } from '../types/Video'
+
 
 class VideoDatabaseClient {
     
@@ -68,7 +70,7 @@ class VideoDatabaseClient {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
             try{
                 if(limit){
-                    const limitedDataQuery = 'SELECT * FROM get_video_data_by_limit($1);';
+                    const limitedDataQuery = 'SELECT * FROM get_all_video_data_by_limit($1);';
                     queryResult.data = (await this.#videoDatabaseClient.query(limitedDataQuery, [limit])).rows
                 }else{
                     const allVideosQuery = `SELECT * FROM get_all_video_data()`
@@ -87,24 +89,25 @@ class VideoDatabaseClient {
 
         /**
          * 
-         * Creates video meatadata by inserting provided information into the database. 
+         * Creates video metadata by inserting provided information into the database. 
          * The streaming url when its available using another method from this class
          * 
-         * @param videoTitle
-         * @param videoDescription
-         * @param outputAssetName The output asset from azure media service that contains streaming files 
+         * @param Video object consisting of video related metadata info
          * @returns DBQueryResponse
          */
-        create: async (videoTitle: string, videoDescription: string, outputAssetName: string): Promise<DBQueryResponse> => {
+        create: async (videoMetadata: Video): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
 
             try{
-                const insertQuery = 'CALL add_initial_video_metadata($1, $2, $3);'
-                await this.#videoDatabaseClient.query(insertQuery, [videoTitle, videoDescription, outputAssetName]);
+                const insertQuery = 'CALL create_initial_video_entry($1, $2, $3, $4, $5, $6, $7, $8, $9);'
+                await this.#videoDatabaseClient.query(insertQuery, 
+                    [videoMetadata.title, videoMetadata.description, videoMetadata.output_asset_name, videoMetadata.upload_date,
+                     videoMetadata.categories, videoMetadata.user_email, videoMetadata.user_profile_url, videoMetadata.user_name, videoMetadata.is_public]
+                );
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success adding video metadata to database'
             }catch(error){
-                const message = `Error trying to add video metadata for assetName ${outputAssetName}. Error: ${error}`
+                const message = `Error trying to add video metadata for assetName ${videoMetadata.output_asset_name}. Error: ${error}`
                 console.error(message)
                 queryResult.message = message
             }        
@@ -124,9 +127,11 @@ class VideoDatabaseClient {
         update: async (streamingURL: string, outputAssetName: string): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
 
+            const tempThumbnailURL = `https://mcdn.wallpapersafari.com/medium/4/69/dc7soF.jpg`;
+
             try{
-                const updateQuery = 'CALL update_streaming_url_by_asset($1, $2);'
-                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, outputAssetName] );
+                const updateQuery = 'CALL update_video_metadata($1, $2, $3);'
+                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, tempThumbnailURL, outputAssetName] );
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success updating streaming url'            
             }catch(error){
@@ -135,6 +140,31 @@ class VideoDatabaseClient {
                 queryResult.message = message
             }
     
+            return queryResult;
+        }
+    }
+    
+    public videoCategories = {
+        /**
+         * 
+         * Get list of all the categories for video media
+         * 
+         * @returns DBQueryResponse
+         */
+        get: async (): Promise<DBQueryResponse> => {
+            const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
+
+            try{
+                const getCategoriesQuery = 'SELECT * FROM get_categories()';
+                queryResult.data = (await this.#videoDatabaseClient.query(getCategoriesQuery)).rows
+                queryResult.wasRequestSuccessful = true;
+                queryResult.message = 'Success retrieving video data'
+            }catch(error){
+                const message = `Error trying to get categories`
+                console.error(message)
+                queryResult.message = message
+            }
+
             return queryResult;
         }
     }

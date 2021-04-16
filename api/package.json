@@ -27,17 +27,17 @@
         "@types/node": "^14.14.37",
         "@types/pg": "^7.14.11",
         "@types/url-parse": "^1.4.3",
-        "@typescript-eslint/eslint-plugin": "^4.20.0",
+        "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.20.0",
         "concurrently": "^6.0.0",
-        "eslint": "^7.23.0",
-        "eslint-config-prettier": "^8.1.0",
+        "eslint": "^7.24.0",
+        "eslint-config-prettier": "^8.2.0",
         "eslint-plugin-prettier": "^3.3.1",
         "got": "^11.8.2",
         "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
         "ts-node": "^9.1.1",
-        "typescript": "^4.2.3"
+        "typescript": "^4.2.4"
     },
     "husky": {
         "hooks": {
@@ -48,7 +48,7 @@
         "@azure/arm-mediaservices": "^8.1.0",
         "@azure/ms-rest-azure-js": "^2.0.2",
         "@azure/ms-rest-js": "^2.2.3",
-        "@azure/ms-rest-nodeauth": "^3.0.8",
+        "@azure/ms-rest-nodeauth": "^3.0.9",
         "@azure/storage-blob": "^12.5.0",
         "cors": "^2.8.5",
         "dotenv": "^8.2.0",

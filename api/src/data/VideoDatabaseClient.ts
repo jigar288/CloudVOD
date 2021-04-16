@@ -70,7 +70,7 @@ class VideoDatabaseClient {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
             try{
                 if(limit){
-                    const limitedDataQuery = 'SELECT * FROM get_video_data_by_limit($1);';
+                    const limitedDataQuery = 'SELECT * FROM get_all_video_data_by_limit($1);';
                     queryResult.data = (await this.#videoDatabaseClient.query(limitedDataQuery, [limit])).rows
                 }else{
                     const allVideosQuery = `SELECT * FROM get_all_video_data()`
@@ -127,9 +127,11 @@ class VideoDatabaseClient {
         update: async (streamingURL: string, outputAssetName: string): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
 
+            const tempThumbnailURL = `https://mcdn.wallpapersafari.com/medium/4/69/dc7soF.jpg`;
+
             try{
-                const updateQuery = 'CALL update_streaming_url_by_asset($1, $2);'
-                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, outputAssetName] );
+                const updateQuery = 'CALL update_video_metadata($1, $2, $3);'
+                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, tempThumbnailURL, outputAssetName] );
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success updating streaming url'            
             }catch(error){

@@ -8,7 +8,7 @@
     "scripts": {
         "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
         "analyze": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --profile --json=stats.json",
-        "test": "jest --passWithNoTests",
+        "test": "jest",
         "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack serve",
         "clean:build": "rm -rf build",
         "clean:install": "rm -rf node_modules",
@@ -80,6 +80,7 @@
         "sass-loader": "^11.0.1",
         "style-loader": "^2.0.0",
         "terser-webpack-plugin": "^5.1.1",
+        "ts-jest": "^26.5.5",
         "ts-loader": "^8.1.0",
         "ts-node": "^9.1.1",
         "tsconfig-paths": "^3.9.0",

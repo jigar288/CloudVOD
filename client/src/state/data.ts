@@ -40,9 +40,12 @@ export const get_videos = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<Video[] | undefined>
-    if (process.env.DEV_DATA !== 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+
     // TODO: Actually make the request to the backend
-    else response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    // if (process.env.DEV_DATA !== 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    // else response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    if (process.env.DEV_DATA !== 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    else response = RETRIEVE_VIDEOS_RESPONSE[0]
 
     // * Check if server is currently responding
     if (response.status === 200 && response.data) {

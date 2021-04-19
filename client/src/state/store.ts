@@ -7,6 +7,7 @@ import * as SanityRedux from './sanity'
 import * as UserRedux from './user'
 import * as ErrorRedux from './error'
 import * as LoadingRedux from './loading'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 const reducer = combineReducers({
     // here we will be adding reducers
@@ -28,3 +29,6 @@ export type RootState = ReturnType<typeof reducer>
 export type AppDispatch = typeof store.dispatch
 export type AppThunk = ThunkAction<void, RootState, null, Action<string>>
 export type RootActions = DataRedux.actions | UserRedux.actions | SanityRedux.actions
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
+export const useAppDispatch = () => useDispatch<AppDispatch>()

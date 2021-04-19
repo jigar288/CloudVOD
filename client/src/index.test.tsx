@@ -1,4 +1,3 @@
-import {} from 'jest'
 import { cleanup } from '@testing-library/react'
 
 describe('Basic Checks', () => {

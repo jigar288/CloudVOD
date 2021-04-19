@@ -1,11 +1,12 @@
-import * as path from 'path'
-import * as webpack from 'webpack'
-import * as DevServer from 'webpack-dev-server'
+import path from 'path'
+import webpack from 'webpack'
+import DevServer from 'webpack-dev-server'
 import dotenv from 'dotenv-defaults'
 import Dotenv from 'dotenv-webpack' // Support for ENV values
 import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
 import TerserPlugin from 'terser-webpack-plugin' // Minifies the bundled JS
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 
 // * Load ENV Variables from the .env and .env.defaults files for use within webpack
 dotenv.config()
@@ -27,6 +28,7 @@ const Configuration: Configuration = {
         hot: true,
         historyApiFallback: true,
         open: true,
+        openPage: 'http://localhost:3000',
     },
 
     // * Support all JS and TS file types and start at src/index.tsx
@@ -34,7 +36,7 @@ const Configuration: Configuration = {
     entry: { bundle: path.join(__dirname, 'src/index.tsx') },
 
     // * Use Terser Plugin for minifying the bundle and cache output
-    optimization: { minimize: true, minimizer: [new TerserPlugin()] },
+    optimization: { minimize: true, minimizer: [new TerserPlugin()], splitChunks: { chunks: 'all' }, usedExports: true },
     cache: true,
 
     output: {
@@ -44,18 +46,19 @@ const Configuration: Configuration = {
     },
 
     plugins: [
-        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
+        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
+        new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
     ],
 
     module: {
         rules: [
-            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'] },
+            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },
-            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader', 'ts-loader'] },
+            { test: /\.(js|jsx|ts|tsx)$/, exclude: /(node_modules)/, use: ['babel-loader'], sideEffects: false },
         ],
     },
 }

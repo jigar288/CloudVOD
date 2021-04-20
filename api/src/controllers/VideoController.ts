@@ -7,6 +7,7 @@ import VideoDatabaseClient from 'data/VideoDatabaseClient'
 import { requiresAuth, OpenidRequest, OpenidResponse } from 'express-openid-connect'
 import { User } from '../types/User'
 import { Video } from '../types/Video'
+import { PublicAccessType } from '@azure/storage-blob'
 
 
 export class VideoController extends Controller {
@@ -19,20 +20,6 @@ export class VideoController extends Controller {
         this.#mediaClient = mediaClient
         this.#videoDBClient = videoDBClient
     }
-
-
-    // ! FIXME: only for testing purposes - add this to file upload route later
-    @Get('/upload-date')
-    async user(req: OpenidRequest, res: OpenidResponse): Promise<void> {      
-      
-      const datestamp = new Date();
-      console.info(datestamp)
-
-      const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
-      console.info(`uploadDate : ${uploadDate}`)
-      
-      res.status(200).send('done')
-    }    
 
     // ! FIXME: only authenticated users should be able to upload files
     // TODO: look at auth routes for example
@@ -178,8 +165,19 @@ export class VideoController extends Controller {
                 const streamingUrlList = await this.#mediaClient.streaming_urls.get(outputAssetName);
                 const smoothStreamingURL = streamingUrlList[4];
 
+                //* update access policy of container to public - necessary to view thumbnail
+                const containerName = await this.#mediaClient.asset.containers.get(outputAssetName);
+                const accessPolicy: PublicAccessType = 'blob';
+                await this.#mediaClient.asset.containers.setAccessPolicy(containerName, accessPolicy);
+
+                //! FIXME: need to update this if file name changes based on encoder settings
+                const thumbnailFileName = 'Thumbnail000001.jpg'
+
+                //* get thumbnail url from blob storage
+                const thumbnailURL = await this.#mediaClient.asset.containers.blob.getURL(thumbnailFileName, containerName);
+
                 // * update DB
-                const dbUpdateResponse = await this.#videoDBClient.streamingURL.update(smoothStreamingURL, outputAssetName)
+                const dbUpdateResponse = await this.#videoDBClient.streamingURL.update(smoothStreamingURL, outputAssetName, thumbnailURL)
                 console.info(dbUpdateResponse)
             }
         }

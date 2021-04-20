@@ -124,14 +124,12 @@ class VideoDatabaseClient {
          * @param assetName The unique output asset name from azure media service that contains files for the video 
          * @returns DBQueryResponse
          */
-        update: async (streamingURL: string, outputAssetName: string): Promise<DBQueryResponse> => {
+        update: async (streamingURL: string, outputAssetName: string, thumbnailURL: string): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
-
-            const tempThumbnailURL = `https://mcdn.wallpapersafari.com/medium/4/69/dc7soF.jpg`;
 
             try{
                 const updateQuery = 'CALL update_video_metadata($1, $2, $3);'
-                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, tempThumbnailURL, outputAssetName] );
+                await this.#videoDatabaseClient.query(updateQuery, [streamingURL, thumbnailURL, outputAssetName] );
                 queryResult.wasRequestSuccessful = true;
                 queryResult.message = 'Success updating streaming url'            
             }catch(error){

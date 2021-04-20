@@ -8,6 +8,8 @@ import { requiresAuth, OpenidRequest, OpenidResponse } from 'express-openid-conn
 import { User } from '../types/User'
 import { Video } from '../types/Video'
 import { PublicAccessType } from '@azure/storage-blob'
+import multer from 'multer'
+
 
 
 export class VideoController extends Controller {
@@ -21,10 +23,8 @@ export class VideoController extends Controller {
         this.#videoDBClient = videoDBClient
     }
 
-    // ! FIXME: only authenticated users should be able to upload files
-    // TODO: look at auth routes for example
     // TODO: move business logic to its own layer?
-    @Post('/video')
+    @Post('/video', [requiresAuth(),  multer({ storage: multer.memoryStorage() }).single('filetoupload') ])
     async upload_video_file(_req: OpenidRequest, res: OpenidResponse): Promise<void> {
 
         const userInfo = _req.oidc.user as User;
@@ -92,7 +92,6 @@ export class VideoController extends Controller {
         this.fail(res, categoriesData.message)
     }
     
-    // ! FIXME: require auth for file uploads
     @Get('/file-upload', [requiresAuth()] )
     async file_uploader(_req: Request, res: Response): Promise<void> {
         res.writeHead(200, { 'Content-Type': 'text/html' })
@@ -182,9 +181,6 @@ export class VideoController extends Controller {
             }
         }
     }      
-
-    
-    // TODO: add route to get video metadata such as streaming url, title, etc --> both authenticated & unauthenticated should have access
 
     @Get('/video-test')
     async video_test(req: Request, res: Response): Promise<void> {

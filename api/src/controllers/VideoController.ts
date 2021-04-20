@@ -40,10 +40,10 @@ export class VideoController extends Controller {
         const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
 
         const isPublic = true;
-        const categories = [3,1,2] 
+        // const categories = [3,1,2] 
 
         //!FIXME: get info from client later
-        // const categoryIDs = _req.body.categories 
+        const categories = _req.body.categories 
         // const isPublic = _req.body.is_public;
 
         const videoMetadata: Video = {

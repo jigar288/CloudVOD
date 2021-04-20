@@ -2,7 +2,7 @@ import { AzureMediaServices } from '@azure/arm-mediaservices'
 import { Asset, AssetContainerSas, Job, JobInputUnion, JobOutputUnion, ListContainerSasInput, StreamingLocator } from '@azure/arm-mediaservices/esm/models'
 import { generateUuid, RestResponse } from '@azure/ms-rest-js'
 import { loginWithServicePrincipalSecretWithAuthResponse } from '@azure/ms-rest-nodeauth'
-import { BlobServiceClient, BlobUploadCommonResponse } from '@azure/storage-blob'
+import { BlobServiceClient, BlobUploadCommonResponse, PublicAccessType } from '@azure/storage-blob'
 import { Readable } from 'node:stream'
 import { AssetType, AzureAccountConfig } from '../types'
 import parse from 'url-parse'
@@ -117,7 +117,39 @@ class MediaClient {
             return deleteResponse;
         },
 
-        containers: {
+        containers: {            
+            
+            blob: {
+                /**
+                 * Get the URL of a blob object inside a container 
+                 * @param blobName name of the blob within a container
+                 * @param containerName name of the container that contains a blob
+                 */
+                getURL: async (blobName: string, containerName: string): Promise<string> => {                    
+                    const containerClient = this.#blobServiceClient.getContainerClient(containerName)
+                    const doesExist = await containerClient.exists()
+                    if (!doesExist) 
+                        throw new Error(`Container doesn't exist with name: ${containerName}`)
+                    
+                    const url = await containerClient.getBlobClient(blobName).url
+                    return url             
+                },  
+            },
+            
+            /**
+             * Get container name given asset name
+             *              
+             * @param assetName 
+             * @returns Promise<string>
+             */
+            get: async (assetName: string): Promise<string> => {                    
+                const { assetContainerSasUrls } = await this.asset.containers.list(assetName)
+                if (!assetContainerSasUrls || assetContainerSasUrls.length === 0) 
+                    throw new Error('No container found')
+                const containerName = parse(assetContainerSasUrls[0]).pathname.substr(1)   
+                return containerName             
+            },    
+            
             /**
              * Gets a list of container URL within the given asset
              *
@@ -156,9 +188,19 @@ class MediaClient {
                 const doesExist = await containerClient.exists()
                 if (!doesExist) 
                     throw new Error(`Container doesn't exist with name: ${containerName}`)
-
-                return await containerClient.getBlockBlobClient(filename).uploadStream(stream);     
+                
+                return await containerClient.getBlockBlobClient(filename).uploadStream(stream);
             },
+            setAccessPolicy: async (containerName: string, policy: PublicAccessType): Promise<void> => { 
+                const containerClient = this.#blobServiceClient.getContainerClient(containerName)            
+                const containerSetAccessPolicyResponse = await containerClient.setAccessPolicy(policy);
+                
+                if(containerSetAccessPolicyResponse._response.status == 200)
+                    console.info(`Success setting access policy for containerName ${containerName} to ${policy}`)
+                else    
+                    console.error(`*** Error setting access policy for containerName ${containerName} to ${policy} ***`)
+
+            }
         },
     }
     public video = {
@@ -178,10 +220,7 @@ class MediaClient {
                 throw new Error('Unable to create Input asset')
 
             // TODO: Create a new container if one doesn't exist
-            const { assetContainerSasUrls } = await this.asset.containers.list(inputAsset.name)
-            if (!assetContainerSasUrls || assetContainerSasUrls.length === 0) 
-                throw new Error('No container found')
-            const containerName = parse(assetContainerSasUrls[0]).pathname.substr(1)
+            const containerName = await this.asset.containers.get(inputAsset.name);
 
             console.info(`Uploading ${filename} ...`)   
 

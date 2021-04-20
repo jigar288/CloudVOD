@@ -7,6 +7,9 @@ import VideoDatabaseClient from 'data/VideoDatabaseClient'
 import { requiresAuth, OpenidRequest, OpenidResponse } from 'express-openid-connect'
 import { User } from '../types/User'
 import { Video } from '../types/Video'
+import { PublicAccessType } from '@azure/storage-blob'
+import multer from 'multer'
+
 
 
 export class VideoController extends Controller {
@@ -20,24 +23,8 @@ export class VideoController extends Controller {
         this.#videoDBClient = videoDBClient
     }
 
-
-    // ! FIXME: only for testing purposes - add this to file upload route later
-    @Get('/upload-date')
-    async user(req: OpenidRequest, res: OpenidResponse): Promise<void> {      
-      
-      const datestamp = new Date();
-      console.info(datestamp)
-
-      const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth()+1}-${datestamp.getDate()}`
-      console.info(`uploadDate : ${uploadDate}`)
-      
-      res.status(200).send('done')
-    }    
-
-    // ! FIXME: only authenticated users should be able to upload files
-    // TODO: look at auth routes for example
     // TODO: move business logic to its own layer?
-    @Post('/video')
+    @Post('/video', [requiresAuth(),  multer({ storage: multer.memoryStorage() }).single('filetoupload') ])
     async upload_video_file(_req: OpenidRequest, res: OpenidResponse): Promise<void> {
 
         const userInfo = _req.oidc.user as User;
@@ -105,7 +92,6 @@ export class VideoController extends Controller {
         this.fail(res, categoriesData.message)
     }
     
-    // ! FIXME: require auth for file uploads
     @Get('/file-upload', [requiresAuth()] )
     async file_uploader(_req: Request, res: Response): Promise<void> {
         res.writeHead(200, { 'Content-Type': 'text/html' })
@@ -178,15 +164,23 @@ export class VideoController extends Controller {
                 const streamingUrlList = await this.#mediaClient.streaming_urls.get(outputAssetName);
                 const smoothStreamingURL = streamingUrlList[4];
 
+                //* update access policy of container to public - necessary to view thumbnail
+                const containerName = await this.#mediaClient.asset.containers.get(outputAssetName);
+                const accessPolicy: PublicAccessType = 'blob';
+                await this.#mediaClient.asset.containers.setAccessPolicy(containerName, accessPolicy);
+
+                //! FIXME: need to update this if file name changes based on encoder settings
+                const thumbnailFileName = 'Thumbnail000001.jpg'
+
+                //* get thumbnail url from blob storage
+                const thumbnailURL = await this.#mediaClient.asset.containers.blob.getURL(thumbnailFileName, containerName);
+
                 // * update DB
-                const dbUpdateResponse = await this.#videoDBClient.streamingURL.update(smoothStreamingURL, outputAssetName)
+                const dbUpdateResponse = await this.#videoDBClient.streamingURL.update(smoothStreamingURL, outputAssetName, thumbnailURL)
                 console.info(dbUpdateResponse)
             }
         }
     }      
-
-    
-    // TODO: add route to get video metadata such as streaming url, title, etc --> both authenticated & unauthenticated should have access
 
     @Get('/video-test')
     async video_test(req: Request, res: Response): Promise<void> {

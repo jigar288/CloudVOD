@@ -24,7 +24,6 @@ BEGIN
 END; $$;
 
 
--- FIXME: incrementally debug this & narrowing down syntax issue by removing small parts of statement
 -- SELECT * FROM get_all_video_data();
 
 -- !fixme: USE TYPES WHEN RETURNING DATA TO TYPESCRIPT api

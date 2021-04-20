@@ -70,9 +70,7 @@ export default class App {
             exit(1)
 
         // * Bind middlewares
-        // ! FIXME: don't add middlewares that don't need to be called for every route --> example: multer
-        const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true }), multer({ storage: multer.memoryStorage() }).single('filetoupload') ]
-        // const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true })]
+        const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true })]
         this.bindMiddlewares(middlewares)
         
         // * Create and controllers

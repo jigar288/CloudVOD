@@ -5,7 +5,7 @@ on:
     branches: ["master", "azure-cd"]
 
 env:
-  AZURE_WEBAPP_NAME: cloudVOD   # set this to your application's name
+  AZURE_WEBAPP_NAME: cloud-vod-api   # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'api'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x'                # set this to the node version to use
 

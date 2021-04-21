@@ -6,6 +6,7 @@ import * as ErrorRedux from './error'
 import * as LoadingRedux from './loading'
 import { AxiosResponse } from 'axios'
 import { AppDispatch, AppThunk } from '.'
+import { api } from '../utilities'
 
 export enum actions {
     RETRIEVE_VIDEOS = 'RETRIEVE_VIDEOS',
@@ -44,8 +45,8 @@ export const get_videos = (): AppThunk => async (dispatch: AppDispatch) => {
     // TODO: Actually make the request to the backend
     // if (process.env.DEV_DATA !== 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
     // else response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
-    if (process.env.DEV_DATA !== 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
-    else response = RETRIEVE_VIDEOS_RESPONSE[0]
+    if (process.env.DEV_DATA === 'true') response = RETRIEVE_VIDEOS_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    else response = await api.get('/data/videos')
 
     // * Check if server is currently responding
     if (response.status === 200 && response.data) {
@@ -64,9 +65,8 @@ export const get_categories = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<Category[] | undefined>
-    if (process.env.DEV_DATA !== 'true') response = RETRIEVE_CATEGORIES_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
-    // TODO: Actually make the request to the backend
-    else response = RETRIEVE_CATEGORIES_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    if (process.env.DEV_DATA === 'true') response = RETRIEVE_CATEGORIES_RESPONSE[Math.floor(Math.random() * RETRIEVE_VIDEOS_RESPONSE.length)]
+    else response = await api.get('/data/categories')
 
     // * Check if server is currently responding
     if (response.status === 200 && response.data) {

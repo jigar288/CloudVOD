@@ -5,6 +5,7 @@ import * as LoadingRedux from './loading'
 import { RETRIEVE_USER_RESPONSE } from '../development/data'
 import { AxiosResponse } from 'axios'
 import { AppDispatch, AppThunk } from '.'
+import { api } from '../utilities'
 
 export enum actions {
     RETRIEVE_USER = 'RETRIEVE_USER',
@@ -24,9 +25,8 @@ export const authorize = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<User | undefined>
-    if (process.env.DEV_DATA !== 'true') response = RETRIEVE_USER_RESPONSE[Math.floor(Math.random() * RETRIEVE_USER_RESPONSE.length)]
-    // TODO: Actually make the request to the backend
-    else response = RETRIEVE_USER_RESPONSE[Math.floor(Math.random() * RETRIEVE_USER_RESPONSE.length)]
+    if (process.env.DEV_DATA === 'true') response = RETRIEVE_USER_RESPONSE[Math.floor(Math.random() * RETRIEVE_USER_RESPONSE.length)]
+    else response = await api.get('/user')
 
     // * Check if server is currently responding
     if (response.status === 200 && response.data) {

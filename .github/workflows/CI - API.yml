@@ -1,99 +1,39 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: CI-API
+name: CD-Client
 
 on:
     push:
         branches: [master]
-    pull_request:
-        branches: [master]
 
 defaults:
     run:
-        working-directory: api
+        working-directory: client
 
 jobs:
-    credential-guard:
-        runs-on: ubuntu-latest
-        timeout-minutes: 1
-        steps:
-            - name: Fail if run by dependabot
-              if: github.actor == 'dependabot[bot]'
-              run: exit 1
-            - uses: actions/checkout@v2
-            - name: Credential-Guard
-              run: ./src/tests/credential-guard.sh
-              env:
-                  # Pull environmental variable from Github
-                  AadClientId: ${{ secrets.AADCLIENTID }}
-                  AadSecret: ${{ secrets.AADSECRET }}
-                  AadTenantDomain: ${{ secrets.AADTENANTDOMAIN }}
-                  AadTenantId: ${{ secrets.AADTENANTID }}
-                  AccountName: ${{ secrets.ACCOUNTNAME }}
-                  Location: ${{ secrets.LOCATION }}
-                  ResourceGroup: ${{ secrets.RESOURCEGROUP }}
-                  SubscriptionId: ${{ secrets.SUBSCRIPTIONID }}
-                  StorageConnection: ${{ secrets.STORAGECONNECTION }}
-                  TransformName: ${{ secrets.TRANSFORMNAME }}
-                  BASE_URL: ${{ secrets.BASE_URL }}
-                  AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-                  AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-                  AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-                  DB_SERVER_NAME: ${{ secrets.DB_SERVER_NAME }}
-                  DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
-                  DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
-                  DB_NAME: ${{ secrets.DB_NAME }}
-                  DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
-    node:
-        runs-on: ubuntu-latest
+    deploy:
         timeout-minutes: 3
-
-        strategy:
-            matrix:
-                node-version: [14.x, 15.x]
-                # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        name: deploy-client
+        runs-on: ubuntu-latest
 
         steps:
-            - name: Fail if run by dependabot
-              if: github.actor == 'dependabot[bot]'
-              run: exit 1
             - uses: actions/checkout@v2
-            - name: Cache NPM dependencies
-              id: cache
-              uses: actions/cache@v2.1.5
-              with:
-                  path: |
-                    api/node_modules
-                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('.github/workflows/CI - API.yml') }}-${{ hashFiles('api/package-lock.json') }}-${{ matrix.node-version }}
-            - name: Use Node.js ${{ matrix.node-version }}
+            - name: Setup Node
               uses: actions/setup-node@v2.1.5
               with:
-                  node-version: ${{ matrix.node-version }}
-            - name: npm ci
-              if: steps.cache.outputs.cache-hit != 'true'
-              run: npm ci
-            - name: npm run build
-              run: npm run build --if-present
-            - run: npm test
+                  node-version: 14.x
+            - name: Install Dependencies
+              run: npm install
+            - name: Build Client
+              run: npm run build
               env:
                   # Pull environmental variable from Github
-                  AadClientId: ${{ secrets.AADCLIENTID }}
-                  AadSecret: ${{ secrets.AADSECRET }}
-                  AadTenantDomain: ${{ secrets.AADTENANTDOMAIN }}
-                  AadTenantId: ${{ secrets.AADTENANTID }}
-                  AccountName: ${{ secrets.ACCOUNTNAME }}
-                  Location: ${{ secrets.LOCATION }}
-                  ResourceGroup: ${{ secrets.RESOURCEGROUP }}
-                  SubscriptionId: ${{ secrets.SUBSCRIPTIONID }}
-                  StorageConnection: ${{ secrets.STORAGECONNECTION }}
-                  TransformName: ${{ secrets.TRANSFORMNAME }}
-                  BASE_URL: ${{ secrets.BASE_URL }}
-                  AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-                  AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-                  AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-                  DB_SERVER_NAME: ${{ secrets.DB_SERVER_NAME }}
-                  DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
-                  DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
-                  DB_NAME: ${{ secrets.DB_NAME }}
-                  DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
+                  API_URL: ${{ secrets.API_URL }}
+                  PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
+            - name: Publish built code to a branch
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
+                  publish_dir: client/build
+                  publish_branch: client-CD

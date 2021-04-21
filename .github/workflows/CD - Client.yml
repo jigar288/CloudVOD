@@ -19,24 +19,14 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
-            - name: Cache NPM dependencies
-              id: cache
-              uses: actions/cache@v2.1.5
-              with:
-                  path: |
-                      client/node_modules
-                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
             - name: Setup Node
               uses: actions/setup-node@v2.1.5
               with:
                   node-version: 14.x
-            - name: Install Uncached Dependencies
-              if: steps.cache.outputs.cache-hit != 'true'
-              run: npm ci
-            - name: Run Tests
-              run: npm test
+            - name: Install Dependencies
+              run: npm install
             - name: Build Client
-              run: npm run build --if-present
+              run: npm run build
             - name: Publish built code to a branch
               uses: peaceiris/actions-gh-pages@v3
               with:

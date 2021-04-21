@@ -30,7 +30,7 @@ export const UploadPage = () => {
                                 Name
                             </FormLabel>
                             <InputGroup size="sm">
-                                <Select focusBorderColor="brand.400" rounded="md" />
+                                <Input focusBorderColor="brand.400" rounded="md" />
                             </InputGroup>
                         </FormControl>
 

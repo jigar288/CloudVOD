@@ -5,7 +5,7 @@ name: CD-Client
 
 on:
     push:
-        branches: [master]
+        branches: [master, ui-cd]
 
 defaults:
     run:
@@ -24,7 +24,7 @@ jobs:
               uses: actions/cache@v2.1.5
               with:
                   path: |
-                    client/node_modules
+                      client/node_modules
                   key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/package-lock.json') }}-${{ matrix.node-version }}
             - name: Use Node.js 14.x
               uses: actions/setup-node@v2.1.5
@@ -40,6 +40,6 @@ jobs:
             - name: Deploy
               uses: peaceiris/actions-gh-pages@v3
               with:
-                deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
-                publish_dir: build
-                publish_branch: client-CD
+                  deploy_key: ${{ secrets.ACTION_DEPLOY_KEY }}
+                  publish_dir: .
+                  publish_branch: client-CD

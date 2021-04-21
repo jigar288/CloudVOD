@@ -20,7 +20,7 @@ export const App = () => {
 
     return (
         <HashRouter>
-            <Navbar paths={paths(!process.env.DEV_DATA)} />
+            <Navbar paths={paths(process.env.DEV_DATA !== 'true')} />
 
             <React.Suspense fallback={<></>}>
                 <Switch>

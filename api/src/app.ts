@@ -1,6 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import multer from 'multer'
 import pg from 'pg'
 import { Controller } from './controllers'
 import { Server } from 'http'
@@ -22,7 +21,7 @@ export default class App {
     #port: number
     #azureConfig: AzureAccountConfig
     #openIDConfig: OpenIDConfigParams
-    #videoDatabaseConfig: pg.ClientConfig 
+    #videoDatabaseConfig: pg.ClientConfig
 
     #server?: Server
     #mediaClient?: MediaClient
@@ -41,7 +40,7 @@ export default class App {
         this.#openIDConfig = openIDConfig
         this.#videoDatabaseConfig = videoDatabaseConfig
 
-        this.#app.use(cors()) //! FIXME: update cors configuration after deployment
+        this.#app.use(cors({ credentials: true })) //! FIXME: update cors configuration after deployment
     }
 
     public start = async (callBack?: Mocha.Done): Promise<void> => {
@@ -66,19 +65,18 @@ export default class App {
 
         if (!this.#mediaClient || !this.#videoDBClient) exit(1)
 
-        if(!this.#videoDBClient.dbConnection.isEstablished())
-            exit(1)
+        if (!this.#videoDBClient.dbConnection.isEstablished()) exit(1)
 
         // * Bind middlewares
         const middlewares = [auth(this.#openIDConfig), express.json(), express.urlencoded({ extended: true })]
         this.bindMiddlewares(middlewares)
-        
+
         // * Create and controllers
         const sanityCrl = new Sanity('/')
         const authCrl = new Auth('/user')
 
         // TODO: use rest standards --> /user/<verb>/
-        const videoController = new VideoController('/data', this.#mediaClient, this.#videoDBClient) 
+        const videoController = new VideoController('/data', this.#mediaClient, this.#videoDBClient)
 
         // * Bind all the controllers
         this.bindControllers([sanityCrl, authCrl, videoController])
@@ -88,7 +86,7 @@ export default class App {
         // * Connect with Azure Media Service and create the client
         this.#mediaClient = await MediaClient.build(this.#azureConfig)
 
-        // * Connect to Video Database Client to store metadata 
+        // * Connect to Video Database Client to store metadata
         this.#videoDBClient = await VideoDatabaseClient.build(this.#videoDatabaseConfig)
 
         // * Other clients and connections here

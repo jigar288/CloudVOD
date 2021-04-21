@@ -5,7 +5,7 @@ name: CD-Client
 
 on:
     push:
-        branches: [master, ui-cd]
+        branches: [master]
 
 defaults:
     run:
@@ -27,8 +27,6 @@ jobs:
               run: npm install
             - name: Build Client
               run: npm run build
-            - name: Remove .gitignore
-              run: rm .gitignore
             - name: Publish built code to a branch
               uses: peaceiris/actions-gh-pages@v3
               with:

@@ -4,6 +4,7 @@ import { CHECK_SERVICE_RESPONSE } from '../development/data'
 import { AxiosResponse } from 'axios'
 import * as ErrorRedux from './error'
 import * as LoadingRedux from './loading'
+import { api } from '../utilities'
 
 export enum actions {
     CHECK_SERVICE = 'CHECK_SERVICE',
@@ -24,9 +25,8 @@ export const check_service = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<String | undefined>
-    if (process.env.DEV_DATA !== 'true') response = CHECK_SERVICE_RESPONSE[Math.floor(Math.random() * CHECK_SERVICE_RESPONSE.length)]
-    // TODO: Actually make the request to the backend
-    else response = CHECK_SERVICE_RESPONSE[Math.floor(Math.random() * CHECK_SERVICE_RESPONSE.length)]
+    if (process.env.DEV_DATA === 'true') response = CHECK_SERVICE_RESPONSE[Math.floor(Math.random() * CHECK_SERVICE_RESPONSE.length)]
+    else response = await api.get('/')
 
     // * Check if server is currently responding
     if (response.status !== 200) dispatch(ErrorRedux.slice.actions.set({ action: actions.CHECK_SERVICE, err: 'API not responding. Please try again later' }))

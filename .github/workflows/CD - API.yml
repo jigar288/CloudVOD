@@ -2,7 +2,7 @@ name: CD-API
 
 on:
   push:
-    branches: ["master", "azure-cd"]
+    branches: ["master"]
 
 env:
   AZURE_WEBAPP_NAME: cloud-vod-api   # set this to your application's name
@@ -13,28 +13,6 @@ jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-    env:
-        # Pull environmental variable from Github
-        API_PORT: "8080"
-        AadClientId: ${{ secrets.AADCLIENTID }}
-        AadSecret: ${{ secrets.AADSECRET }}
-        AadTenantDomain: ${{ secrets.AADTENANTDOMAIN }}
-        AadTenantId: ${{ secrets.AADTENANTID }}
-        AccountName: ${{ secrets.ACCOUNTNAME }}
-        Location: ${{ secrets.LOCATION }}
-        ResourceGroup: ${{ secrets.RESOURCEGROUP }}
-        SubscriptionId: ${{ secrets.SUBSCRIPTIONID }}
-        StorageConnection: ${{ secrets.STORAGECONNECTION }}
-        TransformName: ${{ secrets.TRANSFORMNAME }}
-        BASE_URL: "https://cloud-vod-api.azurewebsites.net/"
-        AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-        AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-        AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-        DB_SERVER_NAME: ${{ secrets.DB_SERVER_NAME }}
-        DB_ADMIN_USERNAME: ${{ secrets.DB_ADMIN_USERNAME }}
-        DB_ADMIN_PASS: ${{ secrets.DB_ADMIN_PASS }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DEFAULT_STREAMING_ENDPOINT_HOSTNAME: ${{ secrets.DEFAULT_STREAMING_ENDPOINT_HOSTNAME }}
     steps:
     - uses: actions/checkout@main
     - name: Use Node.js ${{ env.NODE_VERSION }}

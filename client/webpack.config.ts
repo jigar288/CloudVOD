@@ -29,6 +29,9 @@ const Configuration: Configuration = {
         historyApiFallback: true,
         open: true,
         openPage: 'http://localhost:3000',
+        proxy: {
+            [process.env.API_BASE_PATH as string]: process.env.API_URL as string,
+        },
     },
 
     // * Support all JS and TS file types and start at src/index.tsx

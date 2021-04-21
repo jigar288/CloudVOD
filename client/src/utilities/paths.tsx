@@ -4,8 +4,9 @@ import { NavbarPath } from '../types'
 import { APP_ROUTES } from './routes'
 
 const getRedirectedLink = (login: boolean, sanity: boolean) => {
-    if (sanity) return process.env.API_URL + 'user/' + (login ? 'login' : 'logout') + '?return=' + process.env.PUBLIC_URL
-    else return '/'
+    if (!sanity && process.env.API_URL && process.env.API_BASE_PATH) {
+        return process.env.API_URL + process.env.API_BASE_PATH + '/user/' + (login ? 'login' : 'logout') + '?return=' + process.env.PUBLIC_URL
+    } else return '/'
 }
 
 export const paths: (sanity: boolean) => NavbarPath[] = (sanity) => [

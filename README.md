@@ -3,7 +3,7 @@
 [![CI](https://github.com/jigar288/CloudVOD/workflows/CI-API/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACI-API)
 [![CI](https://github.com/jigar288/CloudVOD/workflows/CI-Client/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACI-Client)
 [![CD - API](https://github.com/jigar288/CloudVOD/workflows/CD-API/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACD-API)
-[![CD - Client](https://api.netlify.com/api/v1/badges/82a307b5-f58f-4f2c-8843-345ae7daed7b/deploy-status)](https://app.netlify.com/sites/cloud-tube/deploys)
+[![CD - Client](https://github.com/jigar288/CloudVOD/workflows/CD-Client/badge.svg)](https://github.com/jigar288/CloudVOD/actions?query=workflow%3ACD-Client)
 
 ## Table of contents
 

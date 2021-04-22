@@ -1,13 +1,35 @@
 import React from 'react'
-import { chakra, Box, Select, Heading, Stack, FormControl, FormLabel, Input, InputGroup, FormHelperText, Textarea, Icon, Button, VisuallyHidden } from '@chakra-ui/react'
+import {
+    chakra,
+    Box,
+    Select,
+    Heading,
+    Stack,
+    FormControl,
+    FormLabel,
+    Input,
+    FormHelperText,
+    Textarea,
+    Button,
+    Spinner,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
+    CloseButton,
+    Flex,
+} from '@chakra-ui/react'
 import { useAppSelector } from '../state'
 import { useState } from 'react'
 import { Category } from '../types'
 import { UploadFile } from '../components/UploadFile'
 
 export const UploadPage = () => {
+    const { data, loading, error } = useAppSelector((state) => state)
+
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
     const [categories, setCategories] = useState<Category[]>([])
-    const { data } = useAppSelector((state) => state)
     const [file, setFile] = useState<File | null>(null)
 
     const handleCategoryChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
@@ -17,46 +39,58 @@ export const UploadPage = () => {
 
         setCategories([...categories, c])
     }
+
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
+        ev.preventDefault()
+
+        alert(JSON.stringify({ name, description, categories: categories.map((x) => x.id), file }))
+    }
+
     return (
         <Box p={10}>
             <Box>
                 <Heading color="white" pb={5}>
                     Upload a new Video
                 </Heading>
-                <chakra.form action="#" method="POST" rounded={[null, 'md']} overflow={{ sm: 'hidden' }}>
+                <chakra.form rounded={[null, 'md']} overflow={{ sm: 'hidden' }} onSubmit={handleSubmit}>
+                    {error.UPLOAD_VIDEO && (
+                        <Alert status="error">
+                            <AlertIcon />
+                            <AlertTitle mr={2}>Error while uploading video</AlertTitle>
+                            <AlertDescription>{error.UPLOAD_VIDEO}</AlertDescription>
+                        </Alert>
+                    )}
+
                     <Stack px={4} py={5} bg={'gray.700'} spacing={6} p={{ sm: 6 }}>
                         <FormControl>
                             <FormLabel fontSize="sm" fontWeight="md" color={'gray.50'}>
                                 Name
                             </FormLabel>
-                            <InputGroup size="sm">
-                                <Input focusBorderColor="brand.400" rounded="md" />
-                            </InputGroup>
+                            <Input focusBorderColor="brand.400" rounded="md" value={name} onChange={(ev) => setName(ev.target.value)} />
+                            <FormHelperText>Please keep it less than 45 characters.</FormHelperText>
                         </FormControl>
 
                         <FormControl>
-                            {JSON.stringify(categories)}
                             <FormLabel fontSize="sm" fontWeight="md" color={'gray.50'}>
                                 Categories
                             </FormLabel>
-                            <InputGroup size="sm">
-                                <Select focusBorderColor="brand.400" rounded="md" onChange={handleCategoryChange} value={undefined}>
-                                    {data.categories
-                                        .filter((c) => categories.find((_c) => _c.id === c.id) === undefined)
-                                        .map((c, idx) => (
-                                            <option value={JSON.stringify(c)} key={idx}>
-                                                {c.name}
-                                            </option>
-                                        ))}
-                                </Select>
-                            </InputGroup>
+
+                            <Select focusBorderColor="brand.400" rounded="md" onChange={handleCategoryChange} value={undefined}>
+                                {data.categories
+                                    .filter((c) => categories.find((_c) => _c.id === c.id) === undefined)
+                                    .map((c, idx) => (
+                                        <option value={JSON.stringify(c)} key={idx}>
+                                            {c.name}
+                                        </option>
+                                    ))}
+                            </Select>
                         </FormControl>
 
                         <FormControl id="email" mt={1}>
                             <FormLabel fontSize="sm" fontWeight="md" color={'gray.50'}>
                                 Description
                             </FormLabel>
-                            <Textarea mt={1} rows={3} shadow="sm" focusBorderColor="brand.400" fontSize={{ sm: 'sm' }} />
+                            <Textarea mt={1} rows={3} shadow="sm" focusBorderColor="brand.400" fontSize={{ sm: 'sm' }} value={description} onChange={(ev) => setDescription(ev.target.value)} />
                             <FormHelperText>Brief description for your video.</FormHelperText>
                         </FormControl>
 
@@ -66,12 +100,13 @@ export const UploadPage = () => {
                             </FormLabel>
                             <UploadFile value={file} setValue={setFile} />
                         </FormControl>
+
+                        <FormControl>
+                            <Button type="submit" _focus={{ shadow: 'none' }} fontWeight="md" disabled={loading.UPLOAD_VIDEO}>
+                                {loading.UPLOAD_VIDEO ? <Spinner /> : 'Upload'}
+                            </Button>
+                        </FormControl>
                     </Stack>
-                    <Box px={{ base: 4, sm: 6 }} py={3} textAlign="right">
-                        <Button type="submit" colorScheme="white" _focus={{ shadow: 'none' }} fontWeight="md">
-                            Save
-                        </Button>
-                    </Box>
                 </chakra.form>
             </Box>
         </Box>

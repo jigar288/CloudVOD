@@ -19,18 +19,21 @@ import {
     CloseButton,
     Flex,
 } from '@chakra-ui/react'
-import { useAppSelector } from '../state'
+import { useAppDispatch, useAppSelector } from '../state'
 import { useState } from 'react'
 import { Category } from '../types'
 import { UploadFile } from '../components/UploadFile'
+import { upload_video } from '../state/data'
 
 export const UploadPage = () => {
     const { data, loading, error } = useAppSelector((state) => state)
 
-    const [name, setName] = useState('')
+    const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [categories, setCategories] = useState<Category[]>([])
     const [file, setFile] = useState<File | null>(null)
+
+    const dispatch = useAppDispatch()
 
     const handleCategoryChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
         event.preventDefault()
@@ -43,7 +46,8 @@ export const UploadPage = () => {
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = (ev) => {
         ev.preventDefault()
 
-        alert(JSON.stringify({ name, description, categories: categories.map((x) => x.id), file }))
+        alert(JSON.stringify({ title, description, categories: categories.map((x) => x.id), file }))
+        if (file) dispatch(upload_video({ title, description, categories: categories.map((x) => x.id), file }))
     }
 
     return (
@@ -66,7 +70,7 @@ export const UploadPage = () => {
                             <FormLabel fontSize="sm" fontWeight="md" color={'gray.50'}>
                                 Name
                             </FormLabel>
-                            <Input focusBorderColor="brand.400" rounded="md" value={name} onChange={(ev) => setName(ev.target.value)} />
+                            <Input focusBorderColor="brand.400" rounded="md" value={title} onChange={(ev) => setTitle(ev.target.value)} />
                             <FormHelperText>Please keep it less than 45 characters.</FormHelperText>
                         </FormControl>
 

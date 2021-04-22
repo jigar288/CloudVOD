@@ -39,7 +39,7 @@ export class VideoController extends Controller {
         // const categories = [3,1,2]
 
         //!FIXME: get info from client later
-        const categories = _req.body.categories
+        const categories = JSON.parse(_req.body.categories)
         // const isPublic = _req.body.is_public;
 
         const videoMetadata: Video = {

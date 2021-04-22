@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Video, Category } from '../types'
+import { Video, Category, UploadVideoParams } from '../types'
 
-import { RETRIEVE_VIDEOS_RESPONSE, RETRIEVE_CATEGORIES_RESPONSE } from '../development/data'
+import { RETRIEVE_VIDEOS_RESPONSE, RETRIEVE_CATEGORIES_RESPONSE, UPLOAD_VIDEO_RESPONSE } from '../development/data'
 import * as ErrorRedux from './error'
 import * as LoadingRedux from './loading'
 import { AxiosResponse } from 'axios'
@@ -78,4 +78,29 @@ export const get_categories = (): AppThunk => async (dispatch: AppDispatch) => {
     }
 
     dispatch(LoadingRedux.slice.actions.stop(actions.RETRIEVE_CATEGORIES))
+}
+
+export const upload_video = (params: UploadVideoParams): AppThunk => async (dispatch: AppDispatch) => {
+    dispatch(LoadingRedux.slice.actions.start(actions.UPLOAD_VIDEO))
+
+    let response: AxiosResponse | undefined
+    if (process.env.DEV_DATA === 'true') response = UPLOAD_VIDEO_RESPONSE[Math.floor(Math.random() * UPLOAD_VIDEO_RESPONSE.length)]
+    else {
+        const form_data = new FormData()
+        form_data.append('title', params.title)
+        form_data.append('description', params.description)
+        form_data.append('categories', JSON.stringify(params.categories))
+        form_data.append('filetoupload', params.file, params.file.name)
+
+        response = await api.post('/data/video', form_data)
+    }
+
+    if (response?.status === 200) {
+        dispatch(ErrorRedux.slice.actions.remove(actions.UPLOAD_VIDEO))
+    } else {
+        dispatch(ErrorRedux.slice.actions.set({ action: actions.UPLOAD_VIDEO, err: response?.data.message || 'Error while uploading video' }))
+    }
+
+    dispatch(get_videos())
+    dispatch(LoadingRedux.slice.actions.stop(actions.UPLOAD_VIDEO))
 }

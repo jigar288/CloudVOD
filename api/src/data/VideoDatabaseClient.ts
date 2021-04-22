@@ -58,16 +58,20 @@ class VideoDatabaseClient {
         }
     }
 
-    public videoMetadata = {
+    public videoMetadata = {            
         /**
-         * Returns metadata about video conetent such as (title, description, streaming url, category, user, upload date)
+         * Returns metadata about video content such as (title, description, streaming url, category, user, upload date)
          * 
          * @param limit Optionally specify amount of rows that should be returned 
          * @returns DBQueryResponse
          *
+         * TODO: add types for db metadata response
+         * 
          *  */         
         get: async (limit?: string): Promise<DBQueryResponse> => {
             const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
+            
+            // retrieve initial video metadata
             try{
                 if(limit){
                     const limitedDataQuery = 'SELECT * FROM get_all_video_data_by_limit($1);';
@@ -83,7 +87,23 @@ class VideoDatabaseClient {
                 console.error(message)
                 queryResult.message = message
             }
-    
+
+            // retrieve & add categories associated with each video
+
+            for (let index = 0; index < queryResult.data.length; index++) {
+                const data = queryResult.data[index];
+                
+                const videoID: number = parseInt(data.id);                
+                const categoriesResponse = await this.videoCategories.getCategoriesByVideoID(videoID);
+                const category_names: string[] = [];
+
+                categoriesResponse.data.forEach( (categoryItem) => {
+                    category_names.push(categoryItem.name)
+                })           
+                                
+                data['category_names'] = category_names;                          
+            }
+                    
             return queryResult;
         },
 
@@ -164,7 +184,23 @@ class VideoDatabaseClient {
             }
 
             return queryResult;
-        }
+        },
+        getCategoriesByVideoID: async (videoID: number) : Promise<DBQueryResponse> => {
+            const queryResult: DBQueryResponse = { data: null, wasRequestSuccessful: false, message: '' }
+
+            try{
+                const categoriesByVideoIDResponse = 'SELECT * FROM get_categories_for_video_id($1);'
+                queryResult.data = (await this.#videoDatabaseClient.query(categoriesByVideoIDResponse, [videoID])).rows
+                queryResult.wasRequestSuccessful = true;
+                queryResult.message = 'Success retrieving categories for a specific video ID'
+            }catch(error) {
+                const message = `Error retrieving categories for a specific video ID`
+                console.error(message)
+                queryResult.message = message
+            }
+
+            return queryResult;
+        } 
     }
 
 

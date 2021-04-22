@@ -57,7 +57,8 @@ const Configuration: Configuration = {
 
     module: {
         rules: [
-            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
+            { test: /\.(css)$/, use: ['style-loader', 'css-loader', 'postcss-loader'], sideEffects: true },
+            { test: /\.(scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },

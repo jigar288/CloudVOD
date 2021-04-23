@@ -1,32 +1,22 @@
 import React from 'react'
 import { useAppSelector } from '../state'
 import VideoCard from '../components/VideoCard'
-import { Box, Flex, Spacer } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 export const VideosPage = () => {
     const { data } = useAppSelector((state) => state)
 
     return (
-        <>
-            <Flex w="100%">
+        <div className="max-w-7xl mx-auto h-full py-8 px-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-stretch gap-8">
                 {data.videos.map((video, index) => {
                     return (
-                        <Box as={Link} to={{ pathname: '/watch/' + video.id, state: video }}>
-                            <VideoCard
-                                key={index}
-                                id={video.id}
-                                title={video.title}
-                                thumbnail_url={video.thumbnail_url}
-                                user_name={video.user_name}
-                                profile_url={video.profile_url}
-                                upload_date={video.upload_date}
-                            />
-                            <>{data.videos.length !== index + 1 && <Spacer />}</>
-                        </Box>
+                        <Link to={{ pathname: '/watch/' + video.id, state: video }}>
+                            <VideoCard key={index} video={video} />
+                        </Link>
                     )
                 })}
-            </Flex>
-        </>
+            </div>
+        </div>
     )
 }

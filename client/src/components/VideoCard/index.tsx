@@ -1,43 +1,31 @@
 import React from 'react'
 import { chakra, Box, Image, Flex, useColorModeValue, Link } from '@chakra-ui/react'
+import { Video } from '../../types'
 
-const VideoCard = (props: { id: number; title: string; thumbnail_url: string; user_name: string; profile_url: string; upload_date: string }) => {
+const VideoCard = ({ video }: { video: Video }) => {
     return (
-        <Flex p={5} w="unset" alignItems="center" justifyContent="center">
-            <Box mx="auto" rounded="lg" shadow="md" bg={useColorModeValue('white', 'gray.800')} maxW="2xl">
-                <Image roundedTop="lg" w="sm" h="full" fit="cover" src={props.thumbnail_url} alt="Thumbnail" />
+        <>
+            <div className="overflow-hidden shadow-lg rounded-lg h-90">
+                <a href="#" className="w-full block h-full">
+                    <img alt="blog photo" src={video.thumbnail_url} className="max-h-40 w-full object-cover" />
+                    <div className="bg-white dark:bg-gray-800 w-full p-4">
+                        {/* <p className="text-indigo-500 text-md font-medium">Article</p> */}
+                        <p className="text-gray-800 dark:text-white text-xl font-medium mb-2">{video.title}</p>
+                        <p className="text-gray-400 dark:text-gray-300 font-light text-md">{video.description}</p>
+                        <div className="flex items-center mt-4">
+                            <div className="block relative">
+                                <img alt="profile" src={video.profile_url} className="mx-auto object-cover rounded-full h-10 w-10 " />
+                            </div>
 
-                <Box bg="gray.600" p={6} roundedBottom="lg">
-                    <Box>
-                        <Link
-                            display="block"
-                            color={useColorModeValue('gray.800', 'white')}
-                            fontWeight="bold"
-                            fontSize="2xl"
-                            mt={2}
-                            _hover={{ color: 'gray.600', textDecor: 'underline' }}
-                            href={'#/watch/' + props.id}
-                        >
-                            {props.title}
-                        </Link>
-                    </Box>
-
-                    <Box mt={4}>
-                        <Flex alignItems="center">
-                            <Flex alignItems="center">
-                                <Image h={10} fit="cover" rounded="full" src={props.profile_url} alt="Avatar" />
-                                <Link mx={2} fontWeight="bold" color={useColorModeValue('gray.700', 'gray.200')} href="#">
-                                    {props.user_name}
-                                </Link>
-                            </Flex>
-                            <chakra.span mx={1} fontSize="sm" color={useColorModeValue('gray.600', 'gray.300')}>
-                                {props.upload_date}
-                            </chakra.span>
-                        </Flex>
-                    </Box>
-                </Box>
-            </Box>
-        </Flex>
+                            <div className="flex flex-col justify-between ml-4 text-sm">
+                                <p className="text-gray-800 dark:text-white">{video.user_name}</p>
+                                <p className="text-gray-400 dark:text-gray-300">{video.upload_date}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </>
     )
 }
 

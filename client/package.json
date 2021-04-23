@@ -9,7 +9,7 @@
         "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
         "analyze": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --profile --json=stats.json",
         "test": "jest",
-        "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=development webpack serve",
+        "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack serve",
         "clean:build": "rm -rf build",
         "clean:install": "rm -rf node_modules",
         "install:clean": "yarn clean:install && yarn install",
@@ -23,6 +23,7 @@
         "@headlessui/react": "^1.0.0",
         "@reduxjs/toolkit": "^1.5.1",
         "axios": "^0.21.1",
+        "favicons-webpack-plugin": "^5.0.2",
         "framer-motion": "^4.1.9",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
@@ -31,7 +32,8 @@
         "react-lazily": "^0.9.0",
         "react-redux": "^7.2.4",
         "react-router-dom": "^5.2.0",
-        "video.js": "^7.12.1"
+        "video.js": "^7.12.1",
+        "workbox-webpack-plugin": "^6.1.5"
     },
     "devDependencies": {
         "@babel/core": "^7.13.16",
@@ -54,6 +56,7 @@
         "@types/webpack": "^5.28.0",
         "@types/webpack-bundle-analyzer": "^4.4.0",
         "@types/webpack-dev-server": "^3.11.3",
+        "@types/workbox-webpack-plugin": "^5.1.6",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.22.0",
         "autoprefixer": "^10.2.5",

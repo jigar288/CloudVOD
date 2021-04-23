@@ -1,12 +1,11 @@
 import React from 'react'
-import { chakra, Box, Image, Flex, useColorModeValue, Link } from '@chakra-ui/react'
 import { Video } from '../../types'
 
 const VideoCard = ({ video }: { video: Video }) => {
     return (
         <>
             <div className="overflow-hidden shadow-lg rounded-lg h-90">
-                <a href="#" className="w-full block h-full">
+                <div className="w-full block h-full">
                     <img alt="blog photo" src={video.thumbnail_url} className="max-h-40 w-full object-cover" />
                     <div className="bg-white dark:bg-gray-800 w-full p-4">
                         {/* <p className="text-indigo-500 text-md font-medium">Article</p> */}
@@ -23,7 +22,7 @@ const VideoCard = ({ video }: { video: Video }) => {
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
         </>
     )

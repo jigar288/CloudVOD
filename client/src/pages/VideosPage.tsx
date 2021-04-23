@@ -11,8 +11,8 @@ export const VideosPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-stretch px-4 xl:px-0  gap-8">
                 {data.videos.map((video, index) => {
                     return (
-                        <Link to={{ pathname: '/watch/' + video.id, state: video }}>
-                            <VideoCard key={index} video={video} />
+                        <Link to={{ pathname: '/watch/' + video.id, state: video }} key={index}>
+                            <VideoCard video={video} />
                         </Link>
                     )
                 })}

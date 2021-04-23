@@ -1,5 +1,5 @@
 require('dotenv-defaults').config({ defaults: true })
-const isDevelopment = process.env.NODE_ENV === 'development'
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 module.exports = function (api) {
     api.cache(true)

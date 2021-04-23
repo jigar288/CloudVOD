@@ -23,6 +23,7 @@
         "@headlessui/react": "^1.0.0",
         "@reduxjs/toolkit": "^1.5.1",
         "axios": "^0.21.1",
+        "favicons": "^6.2.1",
         "favicons-webpack-plugin": "^5.0.2",
         "framer-motion": "^4.1.9",
         "react": "^17.0.2",

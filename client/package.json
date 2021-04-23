@@ -9,7 +9,7 @@
         "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
         "analyze": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --profile --json=stats.json",
         "test": "jest",
-        "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack serve",
+        "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=development webpack serve",
         "clean:build": "rm -rf build",
         "clean:install": "rm -rf node_modules",
         "install:clean": "npm run clean:install && npm install",

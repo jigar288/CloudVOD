@@ -3,7 +3,7 @@ import { useDisclosure } from '@chakra-ui/react'
 import { AiOutlineClose, AiOutlineLogin, AiOutlineLogout, AiOutlineMenu } from 'react-icons/ai'
 import { Disclosure } from '@headlessui/react'
 import { NavbarProps } from '../../types'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from '../../state'
 import { getAuthorizationLink } from '../../utilities'
 //import Logo from "components/navbar/logo"; //TODO
@@ -13,8 +13,8 @@ function classNames(...classes: (string | Boolean)[]) {
 }
 
 const Navbar = (props: NavbarProps) => {
-    const mobileNav = useDisclosure()
     const { user, sanity } = useAppSelector((state) => state)
+    const { pathname } = useLocation()
     const DEV_DATA_SANITY = process.env.DEV_DATA !== 'true'
 
     return (
@@ -38,17 +38,21 @@ const Navbar = (props: NavbarProps) => {
                                     </div>
                                     <div className="hidden sm:block sm:ml-6">
                                         <div className="flex space-x-4">
-                                            {props.paths.map((item, idx) => (
+                                            {props.paths.map(({ name, href, icon }, idx) => (
                                                 <Link
                                                     key={idx}
-                                                    to={item.href}
+                                                    to={href}
                                                     className={classNames(
-                                                        false ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                                        href === pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                         'px-3 py-2 rounded-md text-sm font-medium',
                                                     )}
-                                                    aria-current={false ? 'page' : undefined}
+                                                    aria-current={href === pathname ? 'page' : undefined}
                                                 >
-                                                    {item.name}
+                                                    <span className="inline-flex align-middle">
+                                                        {icon}
+                                                        &nbsp;
+                                                        {name}
+                                                    </span>
                                                 </Link>
                                             ))}
                                         </div>
@@ -74,18 +78,23 @@ const Navbar = (props: NavbarProps) => {
 
                         <Disclosure.Panel className="sm:hidden">
                             <div className="px-2 pt-2 pb-3 space-y-1">
-                                {props.paths.map((item, idx) => (
-                                    <a
+                                {props.paths.map(({ href, name, icon }, idx) => (
+                                    <Disclosure.Button
+                                        as={Link}
                                         key={idx}
-                                        href={item.href}
+                                        to={href}
                                         className={classNames(
-                                            false ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                                            href === pathname ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                             'block px-3 py-2 rounded-md text-base font-medium',
                                         )}
-                                        aria-current={false ? 'page' : undefined}
+                                        aria-current={href === pathname ? 'page' : undefined}
                                     >
-                                        {item.name}
-                                    </a>
+                                        <span className="inline-flex align-middle">
+                                            {icon}
+                                            &nbsp;
+                                            {name}
+                                        </span>
+                                    </Disclosure.Button>
                                 ))}
                             </div>
                         </Disclosure.Panel>

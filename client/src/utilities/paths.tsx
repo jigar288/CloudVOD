@@ -10,7 +10,7 @@ export const getAuthorizationLink = (login: boolean, sanity: boolean) => {
 }
 
 export const paths: NavbarPath[] = [
-    { name: 'Videos', icon: <AiOutlineVideoCamera />, href: APP_ROUTES.VIDEOS_PAGE },
-    { name: 'Upload', icon: <AiOutlineUpload />, authenticated: true, href: APP_ROUTES.UPLOAD_PAGE },
-    { name: 'About Us', icon: <AiOutlineInfoCircle />, href: APP_ROUTES.ABOUT_PAGE },
+    { name: 'Videos', icon: <AiOutlineVideoCamera className="inline-block w-5 h-5" />, href: APP_ROUTES.VIDEOS_PAGE },
+    { name: 'Upload', icon: <AiOutlineUpload className="inline-block w-5 h-5" />, authenticated: true, href: APP_ROUTES.UPLOAD_PAGE },
+    { name: 'About Us', icon: <AiOutlineInfoCircle className="inline-block w-5 h-5" />, href: APP_ROUTES.ABOUT_PAGE },
 ]

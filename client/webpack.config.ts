@@ -51,7 +51,7 @@ const Configuration: Configuration = {
     plugins: [
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
-        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
+        ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()] : []),
         new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
     ],
 

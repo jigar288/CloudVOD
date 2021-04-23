@@ -1,8 +1,5 @@
-require('dotenv-defaults').config({ defaults: true })
-const isDevelopment = process.env.NODE_ENV !== 'production'
-
 module.exports = {
-    mode: isDevelopment ? undefined : 'jit',
+    mode: 'jit',
     important: true,
 
     // Active dark mode on class basis

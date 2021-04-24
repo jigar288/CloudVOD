@@ -49,7 +49,7 @@ jobs:
               run: ./src/tests/credential-guard.sh
     CI-API-test:
         runs-on: ubuntu-latest
-        name: "CI-API: Test"
+        name: "Test"
         timeout-minutes: 3
 
         strategy:

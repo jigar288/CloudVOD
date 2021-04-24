@@ -17,7 +17,7 @@ defaults:
 jobs:
     CI-Client-test:
         timeout-minutes: 3
-        name: "Test"
+        name: "Test Client"
         runs-on: ubuntu-latest
 
         strategy:

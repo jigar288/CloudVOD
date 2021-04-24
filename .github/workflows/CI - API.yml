@@ -65,17 +65,16 @@ jobs:
               with:
                   path: |
                     api/node_modules
-                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('.github/workflows/CI - API.yml') }}-${{ hashFiles('api/package-lock.json') }}-${{ matrix.node-version }}
+                  key: ${{ runner.OS }}-npm-cache-api-${{ hashFiles('.github/workflows/CI - API.yml') }}-${{ hashFiles('api/yarn.lock') }}-${{ matrix.node-version }}
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v2.1.5
               with:
                   node-version: ${{ matrix.node-version }}
-            - name: npm ci
-              if: steps.cache.outputs.cache-hit != 'true'
-              run: npm ci
-            - name: npm run build
-              run: npm run build --if-present
-            - run: npm test
+            - name: yarn install
+              run: yarn install --frozen-lockfile
+            - name: yarn build
+              run: yarn build
+            - run: yarn test
               env:
                   # Pull environmental variable from Github
                   AadClientId: ${{ secrets.AADCLIENTID }}

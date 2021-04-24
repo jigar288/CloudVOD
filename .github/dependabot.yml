@@ -2,16 +2,16 @@
 
 version: 2
 updates:
-    # Enable version updates for npm
-    - package-ecosystem: 'npm'
+    # Enable version updates for yarn
+    - package-ecosystem: 'yarn'
       # Look for `package.json` and `lock` files in the `api` directory
       directory: './api'
       # Check the npm registry for updates every day (weekdays)
       schedule:
           interval: 'weekly'
           
-    # Enable version updates for npm
-    - package-ecosystem: 'npm'
+    # Enable version updates for yarn
+    - package-ecosystem: 'yarn'
       # Look for `package.json` and `lock` files in the `client` directory
       directory: './client'
       # Check the npm registry for updates every day (weekdays)

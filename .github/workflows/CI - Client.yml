@@ -11,12 +11,13 @@ on:
 
 defaults:
     run:
+        shell: bash
         working-directory: client
 
 jobs:
-    build:
+    CI-Client-test:
         timeout-minutes: 3
-        name: build-client
+        name: "CI-Client: Test"
         runs-on: ubuntu-latest
 
         strategy:

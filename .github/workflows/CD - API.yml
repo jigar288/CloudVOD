@@ -2,6 +2,10 @@ name: CD-API
 
 on: workflow_dispatch
 
+defaults:
+    run:
+        shell: bash
+
 env:
     AZURE_WEBAPP_NAME: cloud-vod-api # set this to your application's name
     AZURE_WEBAPP_PACKAGE_PATH: 'api' # set this to the path to your web app project, defaults to the repository root

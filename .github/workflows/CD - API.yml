@@ -2,14 +2,18 @@ name: CD-API
 
 on: workflow_dispatch
 
+defaults:
+    run:
+        shell: bash
+
 env:
     AZURE_WEBAPP_NAME: cloud-vod-api # set this to your application's name
     AZURE_WEBAPP_PACKAGE_PATH: 'api' # set this to the path to your web app project, defaults to the repository root
     NODE_VERSION: '14.x' # set this to the node version to use
 
 jobs:
-    build-and-deploy:
-        name: Build and Deploy
+    deploy:
+        name: "Deploy API"
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@main

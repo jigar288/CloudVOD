@@ -11,12 +11,13 @@ on:
 
 defaults:
     run:
+        shell: bash
         working-directory: client
 
 jobs:
-    build:
+    CI-Client-test:
         timeout-minutes: 3
-        name: build-client
+        name: "Test Client"
         runs-on: ubuntu-latest
 
         strategy:
@@ -25,10 +26,10 @@ jobs:
                 # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
+            - uses: actions/checkout@v2
             - name: Fail if run by dependabot
               if: github.actor == 'dependabot[bot]'
               run: exit 1
-            - uses: actions/checkout@v2
             - name: Cache NPM dependencies
               id: cache
               uses: actions/cache@v2.1.5

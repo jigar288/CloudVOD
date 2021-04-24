@@ -7,12 +7,13 @@ on: workflow_dispatch
 
 defaults:
     run:
+        shell: bash
         working-directory: client
 
 jobs:
     deploy:
         timeout-minutes: 3
-        name: deploy-client
+        name: "Deploy Client"
         runs-on: ubuntu-latest
 
         steps:

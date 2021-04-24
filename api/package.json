@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "description": "CloudVOD is a video on demand platform using Microsoft Azure",
     "scripts": {
-        "start": "npm run serve",
-        "build": "npm run build-ts",
+        "start": "yarn serve",
+        "build": "yarn build-ts",
         "serve": "node dist/server.js",
         "watch-node": "nodemon dist/server.js",
-        "watch": "npm run build && concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\"  \"npm run watch-ts\" \"npm run watch-node\"",
+        "watch": "yarn build && concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\"  \"yarn watch-ts\" \"yarn watch-node\"",
         "build-ts": "tsc",
         "watch-ts": "tsc -w",
         "dev": "ts-node src/index.ts",
@@ -15,7 +15,7 @@
         "mocha": "mocha -r ts-node/register src/tests/*.ts",
         "credential-guard": "./src/tests/credential-guard.sh",
         "local-action": "./src/tests/utility/env2GithubSecret.sh > .secret && (act --secret-file ./.secret || true) && rm .secret",
-        "test": "npm run lint && npm run mocha"
+        "test": "yarn lint && yarn mocha"
     },
     "devDependencies": {
         "@types/chai": "^4.2.16",
@@ -41,7 +41,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-push": "npm run lint"
+            "pre-push": "yarn lint"
         }
     },
     "dependencies": {

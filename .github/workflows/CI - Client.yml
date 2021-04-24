@@ -28,7 +28,7 @@ jobs:
         steps:
             - name: Fail if run by dependabot
               if: github.actor != 'dependabot[bot]'
-              run: exit 1
+              run: bash -c "exit 1"
             - uses: actions/checkout@v2
             - name: Cache NPM dependencies
               id: cache

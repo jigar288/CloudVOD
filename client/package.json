@@ -12,8 +12,8 @@
         "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" NODE_ENV=development webpack serve",
         "clean:build": "rm -rf build",
         "clean:install": "rm -rf node_modules",
-        "install:clean": "npm run clean:install && npm install",
-        "build:clean": "npm run clean:build && npm run build"
+        "install:clean": "yarn clean:install && yarn install",
+        "build:clean": "yarn clean:build && yarn build"
     },
     "dependencies": {
         "@chakra-ui/icons": "^1.0.12",

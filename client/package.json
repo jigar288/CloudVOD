@@ -80,7 +80,7 @@
         "prettier": "^2.2.1",
         "react-reconciler": "^0.26.2",
         "react-refresh": "^0.9.0",
-        "sass": "^1.32.8",
+        "sass": "^1.32.11",
         "sass-loader": "^11.0.1",
         "style-loader": "^2.0.0",
         "tailwindcss": "^2.1.1",

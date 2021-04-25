@@ -13,21 +13,18 @@ defaults:
 jobs:
     deploy:
         timeout-minutes: 3
-        name: "Deploy Client"
+        name: 'Deploy Client'
         runs-on: ubuntu-latest
 
         steps:
-            - name: Fail if run by dependabot
-                  if: github.actor == 'dependabot[bot]'
-                  run: exit 1
-                - name: Cache NPM dependencies
-                  id: cache
-                  uses: actions/cache@v2.1.5
-                  with:
-                      path: |
-                        client/node_modules
-                      key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/yarn.lock') }}-${{ matrix.node-version }}
             - uses: actions/checkout@v2
+            - name: Cache NPM dependencies
+              id: cache
+              uses: actions/cache@v2.1.5
+              with:
+                  path: |
+                      client/node_modules
+                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/yarn.lock') }}-${{ matrix.node-version }}
             - name: Setup Node
               uses: actions/setup-node@v2.1.5
               with:

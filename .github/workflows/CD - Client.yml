@@ -17,9 +17,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Fail if run by dependabot
-              if: github.actor == 'dependabot[bot]'
-              run: exit 1
+            - uses: actions/checkout@v2
             - name: Cache NPM dependencies
               id: cache
               uses: actions/cache@v2.1.5
@@ -27,7 +25,6 @@ jobs:
                   path: |
                       client/node_modules
                   key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/yarn.lock') }}-${{ matrix.node-version }}
-            - uses: actions/checkout@v2
             - name: Setup Node
               uses: actions/setup-node@v2.1.5
               with:

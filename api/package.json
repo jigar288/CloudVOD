@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "description": "CloudVOD is a video on demand platform using Microsoft Azure",
     "scripts": {
-        "start": "npm run serve",
-        "build": "npm run build-ts",
+        "start": "yarn serve",
+        "build": "yarn build-ts",
         "serve": "node dist/server.js",
         "watch-node": "nodemon dist/server.js",
-        "watch": "npm run build && concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\"  \"npm run watch-ts\" \"npm run watch-node\"",
+        "watch": "yarn build && concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\"  \"yarn watch-ts\" \"yarn watch-node\"",
         "build-ts": "tsc",
         "watch-ts": "tsc -w",
         "dev": "ts-node src/index.ts",
@@ -15,7 +15,7 @@
         "mocha": "mocha -r ts-node/register src/tests/*.ts",
         "credential-guard": "./src/tests/credential-guard.sh",
         "local-action": "./src/tests/utility/env2GithubSecret.sh > .secret && (act --secret-file ./.secret || true) && rm .secret",
-        "test": "npm run lint && npm run mocha"
+        "test": "yarn lint && yarn mocha"
     },
     "devDependencies": {
         "@types/chai": "^4.2.16",
@@ -24,15 +24,15 @@
         "@types/got": "^9.6.11",
         "@types/mocha": "^8.2.2",
         "@types/multer": "^1.4.5",
-        "@types/node": "^14.14.37",
+        "@types/node": "^14.14.41",
         "@types/pg": "^7.14.11",
         "@types/url-parse": "^1.4.3",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
-        "@typescript-eslint/parser": "^4.20.0",
-        "concurrently": "^6.0.0",
-        "eslint": "^7.24.0",
-        "eslint-config-prettier": "^8.2.0",
-        "eslint-plugin-prettier": "^3.3.1",
+        "@typescript-eslint/parser": "^4.22.0",
+        "concurrently": "^6.0.2",
+        "eslint": "^7.25.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^3.4.0",
         "got": "^11.8.2",
         "mocha": "^8.3.2",
         "nodemon": "^2.0.7",
@@ -41,13 +41,13 @@
     },
     "husky": {
         "hooks": {
-            "pre-push": "npm run lint"
+            "pre-push": "yarn lint"
         }
     },
     "dependencies": {
         "@azure/arm-mediaservices": "^8.1.0",
         "@azure/ms-rest-azure-js": "^2.0.2",
-        "@azure/ms-rest-js": "^2.2.3",
+        "@azure/ms-rest-js": "^2.4.0",
         "@azure/ms-rest-nodeauth": "^3.0.9",
         "@azure/storage-blob": "^12.5.0",
         "cors": "^2.8.5",
@@ -58,8 +58,8 @@
         "fs": "0.0.1-security",
         "into-stream": "^6.0.0",
         "multer": "^1.4.2",
-        "pg": "^8.5.1",
+        "pg": "^8.6.0",
         "url-parse": "^1.5.1",
-        "xmldom": ">=0.5.0"
+        "xmldom": ">=0.6.0"
     }
 }

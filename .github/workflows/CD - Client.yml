@@ -3,30 +3,36 @@
 
 name: CD-Client
 
-on:
-    push:
-        branches: [master]
+on: workflow_dispatch
 
 defaults:
     run:
+        shell: bash
         working-directory: client
 
 jobs:
     deploy:
         timeout-minutes: 3
-        name: deploy-client
+        name: 'Deploy Client'
         runs-on: ubuntu-latest
 
         steps:
             - uses: actions/checkout@v2
+            - name: Cache NPM dependencies
+              id: cache
+              uses: actions/cache@v2.1.5
+              with:
+                  path: |
+                      client/node_modules
+                  key: ${{ runner.OS }}-npm-cache-client-${{ hashFiles('.github/workflows/CI - Client.yml') }}-${{ hashFiles('client/yarn.lock') }}-${{ matrix.node-version }}
             - name: Setup Node
               uses: actions/setup-node@v2.1.5
               with:
                   node-version: 14.x
             - name: Install Dependencies
-              run: npm install
+              run: yarn install --frozen-lockfile
             - name: Build Client
-              run: npm run build
+              run: yarn build
               env:
                   # Pull environmental variable from Github
                   API_URL: ${{ secrets.API_URL }}

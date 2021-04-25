@@ -53,7 +53,7 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
                 <Stack spacing={1} textAlign="center">
                     <Flex fontSize="sm" color={'gray.400'} alignItems="center">
                         <chakra.label rounded="md" fontSize="md" color={'brand.200'} pos="relative">
-                            <span>Drag it here</span>
+                            <span>Drop the file here</span>
                         </chakra.label>
                     </Flex>
                     <Text fontSize="xs" color={'gray.50'}>
@@ -63,23 +63,7 @@ export const UploadFile: React.FC<UploadFileProps> = (props) => {
             ) : props.value === null ? (
                 <Stack spacing={1} textAlign="center">
                     <Flex fontSize="sm" color={'gray.400'} alignItems="center">
-                        <chakra.label
-                            htmlFor="file-upload"
-                            cursor="pointer"
-                            rounded="md"
-                            fontSize="md"
-                            color={'brand.200'}
-                            pos="relative"
-                            _hover={{
-                                color: 'brand.300',
-                            }}
-                        >
-                            <span>Upload a file</span>
-                            <VisuallyHidden>
-                                <input type="file" />
-                            </VisuallyHidden>
-                        </chakra.label>
-                        <Text pl={1}>or drag and drop</Text>
+                        <span>Drag and drop the file here</span>
                     </Flex>
                     <Text fontSize="xs" color={'gray.50'}>
                         MP4 or MOV File Only

@@ -1,4 +1,5 @@
 import path from 'path'
+import os from 'os'
 import webpack from 'webpack'
 import DevServer from 'webpack-dev-server'
 import dotenv from 'dotenv-defaults'
@@ -7,6 +8,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
 import TerserPlugin from 'terser-webpack-plugin' // Minifies the bundled JS
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import WorkboxPlugin from 'workbox-webpack-plugin'
+import FaviconsWebpackPlugin from 'favicons-webpack-plugin'
 
 // * Load ENV Variables from the .env and .env.defaults files for use within webpack
 dotenv.config()
@@ -32,6 +35,9 @@ const Configuration: Configuration = {
         proxy: {
             [process.env.API_BASE_PATH as string]: process.env.API_URL as string,
         },
+        watchOptions: {
+            ignored: path.join(os.homedir(), '.tailwindcss', 'touch'),
+        },
     },
 
     // * Support all JS and TS file types and start at src/index.tsx
@@ -50,14 +56,22 @@ const Configuration: Configuration = {
 
     plugins: [
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, 'logo.png'),
+            mode: 'webapp',
+            inject: true,
+            cache: true,
+        }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
-        ...(isDevelopment ? [new ReactRefreshWebpackPlugin()] : []),
+        new WorkboxPlugin.GenerateSW(),
+        ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()] : []),
         new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
     ],
 
     module: {
         rules: [
-            { test: /\.(css|scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
+            { test: /\.(css)$/, use: ['style-loader', 'css-loader', 'postcss-loader'], sideEffects: true },
+            { test: /\.(scss|sass)$/, use: ['style-loader', 'css-loader', 'sass-loader'], sideEffects: true },
             { test: /\.(png|jpg|gif)$/i, use: ['file-loader'] },
             { test: /\.svg$/, use: '@svgr/webpack' },
             { test: /\.html$/, use: [{ loader: 'html-loader' }] },

@@ -1,4 +1,5 @@
 import path from 'path'
+import os from 'os'
 import webpack from 'webpack'
 import DevServer from 'webpack-dev-server'
 import dotenv from 'dotenv-defaults'
@@ -32,6 +33,9 @@ const Configuration: Configuration = {
         proxy: {
             [process.env.API_BASE_PATH as string]: process.env.API_URL as string,
         },
+        watchOptions: {
+            ignored: path.join(os.homedir(), '.tailwindcss', 'touch'),
+        },
     },
 
     // * Support all JS and TS file types and start at src/index.tsx
@@ -53,6 +57,16 @@ const Configuration: Configuration = {
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
         ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()] : []),
         new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+        (compiler) => {
+            compiler.hooks.watchRun.tap('WatchRun', (comp) => {
+                if (comp.modifiedFiles) {
+                    const changedFiles = Array.from(comp.modifiedFiles, (file) => `\n  ${file}`).join('')
+                    console.log('===============================')
+                    console.log('FILES CHANGED:', changedFiles)
+                    console.log('===============================')
+                }
+            })
+        },
     ],
 
     module: {

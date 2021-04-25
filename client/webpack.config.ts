@@ -8,6 +8,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin' // Generates index.html
 import TerserPlugin from 'terser-webpack-plugin' // Minifies the bundled JS
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import WorkboxPlugin from 'workbox-webpack-plugin'
+import FaviconsWebpackPlugin from 'favicons-webpack-plugin'
 
 // * Load ENV Variables from the .env and .env.defaults files for use within webpack
 dotenv.config()
@@ -54,7 +56,14 @@ const Configuration: Configuration = {
 
     plugins: [
         new HtmlWebpackPlugin({ title: process.env.TITLE, template: 'index.ejs' }),
+        new FaviconsWebpackPlugin({
+            logo: path.resolve(__dirname, 'logo.png'),
+            mode: 'webapp',
+            inject: true,
+            cache: true,
+        }),
         new Dotenv({ safe: true, defaults: true, systemvars: true }),
+        new WorkboxPlugin.GenerateSW(),
         ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin(), new ReactRefreshWebpackPlugin()] : []),
         new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
     ],

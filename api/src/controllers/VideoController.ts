@@ -34,12 +34,11 @@ export class VideoController extends Controller {
 
         //* need to add +1 for month since .getMonth() subtracts 1 to represent (0-11 month range)
         const uploadDate = `${datestamp.getFullYear()}-${datestamp.getMonth() + 1}-${datestamp.getDate()}`
-
-        const isPublic = true
-        // const categories = [3,1,2]
-
-        //!FIXME: get info from client later
+      
         const categories = JSON.parse(_req.body.categories)
+        
+        // TODO: add public/private feature later         
+        const isPublic = true
         // const isPublic = _req.body.is_public;
 
         const videoMetadata: Video = {
@@ -83,39 +82,6 @@ export class VideoController extends Controller {
 
         if (categoriesData.wasRequestSuccessful) this.ok(res, categoriesData.data)
         else this.fail(res, categoriesData.message)
-    }
-
-    @Get('/file-upload', [requiresAuth()])
-    async file_uploader(_req: Request, res: Response): Promise<void> {
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.write(`
-          <!DOCTYPE html>
-          <html>
-          <body>
-          
-          <h2>Upload Video</h2>
-          
-          <form action="video" method="post" enctype="multipart/form-data">
-            
-            <label for="title">Video Title:</label><br>
-            <input type="text" id="title" name="title" value=""><br>
-
-            <label for="description">Video Description:</label><br>
-            <input type="text" id="description" name="description" value=""><br>
-
-            <label for="categoryID">Category ID:</label><br>
-            <input type="text" id="categoryID" name="categoryID" value="">
-            <br><br><br>
-            <input type="file" name="filetoupload">
-            <br>
-            <br>
-            <input type="submit">
-          </form>
-          
-          </body>
-          </html>        
-        `)
-        return res.end()
     }
 
     @Get('/videos')
@@ -169,101 +135,4 @@ export class VideoController extends Controller {
         }
     }
 
-    @Get('/video-test')
-    async video_test(req: Request, res: Response): Promise<void> {
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.write(
-            `
-            <html>
-            <head>
-                <link
-                href="https://amp.azure.net/libs/amp/2.3.6/skins/amp-default/azuremediaplayer.min.css"
-                rel="stylesheet"
-              />
-              <script src="https://amp.azure.net/libs/amp/2.3.6/azuremediaplayer.min.js"></script>
-              <script>
-                function handleOnClick() {
-                  var myPlayer = amp(
-                    "azuremediaplayer",
-                    {
-                      /* Options */
-                      techOrder: [
-                        "azureHtml5JS",
-                        "flashSS",
-                        "html5FairPlayHLS",
-                        "silverlightSS",
-                        "html5",
-                      ],
-                      nativeControlsForTouch: false,
-                      autoplay: false,
-                      controls: true,
-                      width: "640",
-                      height: "400",
-                      poster: "",
-                    },
-                    function () {
-                      console.log("Good to go!");
-                      // add an event listener
-                      this.addEventListener("ended", function () {
-                        console.log("Finished!");
-                      });
-                    }
-                  );
-                  myPlayer.src([
-                    {
-                      src: document.getElementById("source_input").value,
-                      type: "application/vnd.ms-sstr+xml",
-                    },
-                  ]);
-                }
-              </script>
-            </head>
-        
-            <body>
-                
-          <video
-          id="azuremediaplayer"
-          class="azuremediaplayer amp-default-skin amp-big-play-centered"
-          tabindex="0"
-        ></video>
-        <br />
-        <br />
-        Streaming URL Here:
-        <input type="text" id="source_input" />
-        <button id="source_button" onclick="{handleOnClick}">Start Streaming</button>
-        <script>
-          document.getElementById("source_button").onclick = handleOnClick;
-        </script>
-        
-          <h5>Video Links</h5>
-          <ul id="videoList">
-          </ul>
-        
-          <script>
-              let videoListRef = document.querySelector('#videoList');
-        
-              function addToList(listItemData) {
-                  var x = document.createElement("LI");
-                  var t = document.createTextNode(listItemData);
-                  x.appendChild(t);
-                  videoListRef.appendChild(x);
-              }     
-              
-              fetch('http://localhost:5000/api/data/videos')
-              .then(response => response.json())
-              .then(response => {
-                  const data = response.message.data 
-                  data.forEach( videoItem => {
-                      const itemData = 'Title: ' + videoItem.video_title + ' - URL:' +  videoItem.streaming_url;
-                      addToList(itemData)
-                  })
-              });
-          </script>
-            </body>
-        
-        </html>
-            `,
-        )
-        res.end()
-    }
 }

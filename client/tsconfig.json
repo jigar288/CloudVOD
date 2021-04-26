@@ -1,7 +1,6 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "baseUrl": "src",
         "sourceMap": true,
         "lib": [
             "dom",
@@ -18,11 +17,14 @@
         "resolveJsonModule": true,
         "jsx": "react",
         "removeComments": true,
-        "outDir": "build"
+        "outDir": "build",
+        "types": [
+            "vite/client",
+            "@types/jest",
+            "vite-plugin-pwa/client"
+        ]
     },
-    "exclude": [
-        "node_modules",
-        "public",
-        "build",
+    "include": [
+        "src",
     ],
 }

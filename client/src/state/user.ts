@@ -25,7 +25,7 @@ export const authorize = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<User | undefined>
-    if (process.env.DEV_DATA === 'true') response = RETRIEVE_USER_RESPONSE[Math.floor(Math.random() * RETRIEVE_USER_RESPONSE.length)]
+    if (import.meta.env.VITE_DEV_DATA === 'true') response = RETRIEVE_USER_RESPONSE[Math.floor(Math.random() * RETRIEVE_USER_RESPONSE.length)]
     else response = await api.get('/user')
 
     // * Check if server is currently responding

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { store } from './state'
 import { ChakraProvider, ColorModeScript, extendTheme } from '@chakra-ui/react'
 
+import { registerSW } from 'virtual:pwa-register'
 import { App } from './components/App'
 import 'tailwindcss/tailwind.css'
 
@@ -18,3 +19,6 @@ const AppRoot = () => {
     )
 }
 ReactDOM.render(<AppRoot />, document.getElementById('root'))
+
+/* Register the service worker  */
+registerSW()

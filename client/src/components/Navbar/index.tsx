@@ -15,7 +15,7 @@ function classNames(...classes: (string | Boolean)[]) {
 const Navbar = (props: NavbarProps) => {
     const { user, sanity } = useAppSelector((state) => state)
     const { pathname } = useLocation()
-    const DEV_DATA_SANITY = process.env.DEV_DATA !== 'true'
+    const DEV_DATA_SANITY = import.meta.env.VITE_DEV_DATA !== 'true'
 
     return (
         <>

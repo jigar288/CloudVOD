@@ -4,8 +4,8 @@ import { NavbarPath } from '../types'
 import { APP_ROUTES } from './routes'
 
 export const getAuthorizationLink = (login: boolean, sanity: boolean) => {
-    if (sanity && process.env.API_URL && process.env.API_BASE_PATH) {
-        return process.env.API_URL + process.env.API_BASE_PATH + '/user/' + (login ? 'login' : 'logout') + '?return=' + process.env.PUBLIC_URL
+    if (sanity && import.meta.env.VITE_API_URL && import.meta.env.VITE_API_BASE_PATH) {
+        return import.meta.env.VITE_API_URL + import.meta.env.VITE_API_BASE_PATH + '/user/' + (login ? 'login' : 'logout') + '?return=' + import.meta.env.VITE_PUBLIC_URL
     } else return '/'
 }
 

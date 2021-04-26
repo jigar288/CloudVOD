@@ -6,14 +6,10 @@
     "author": "Arshad, Jigar, Clark",
     "main": "index.tsx",
     "scripts": {
-        "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack",
-        "analyze": "cross-env NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --profile --json=stats.json",
-        "test": "cross-env NODE_ENV=test jest",
-        "start": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack serve",
-        "clean:build": "rm -rf build",
-        "clean:install": "rm -rf node_modules",
-        "install:clean": "yarn clean:install && yarn install",
-        "build:clean": "yarn clean:build && yarn build"
+        "build": "vite build",
+        "test": "jest",
+        "start": "vite",
+        "https-preview": "yarn build && cross-env PORT=3000 serve build"
     },
     "dependencies": {
         "@chakra-ui/icons": "^1.0.12",
@@ -61,6 +57,7 @@
         "@types/workbox-webpack-plugin": "^5.1.6",
         "@typescript-eslint/eslint-plugin": "^4.22.0",
         "@typescript-eslint/parser": "^4.22.0",
+        "@vitejs/plugin-react-refresh": "^1.3.3",
         "autoprefixer": "^10.2.5",
         "babel-jest": "^26.6.3",
         "babel-loader": "^8.2.2",
@@ -79,6 +76,7 @@
         "file-loader": "^6.2.0",
         "html-loader": "^2.1.2",
         "html-webpack-plugin": "^5.3.1",
+        "https-localhost": "^4.6.4",
         "jest": "^26.6.3",
         "postcss": "^8.2.12",
         "postcss-loader": "^5.2.0",
@@ -94,6 +92,8 @@
         "tsconfig-paths": "^3.9.0",
         "typescript": "^4.2.4",
         "url-loader": "^4.1.1",
+        "vite": "^2.2.3",
+        "vite-plugin-pwa": "^0.7.2",
         "webpack": "^5.35.1",
         "webpack-bundle-analyzer": "^4.4.1",
         "webpack-cli": "^4.6.0",

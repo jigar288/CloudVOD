@@ -25,7 +25,7 @@ export const check_service = (): AppThunk => async (dispatch: AppDispatch) => {
 
     // * Get mocked data or ping the server
     let response: AxiosResponse<String | undefined>
-    if (process.env.DEV_DATA === 'true') response = CHECK_SERVICE_RESPONSE[Math.floor(Math.random() * CHECK_SERVICE_RESPONSE.length)]
+    if (import.meta.env.VITE_DEV_DATA === 'true') response = CHECK_SERVICE_RESPONSE[Math.floor(Math.random() * CHECK_SERVICE_RESPONSE.length)]
     else response = await api.get('/')
 
     // * Check if server is currently responding

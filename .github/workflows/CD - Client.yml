@@ -35,8 +35,8 @@ jobs:
               run: yarn build
               env:
                   # Pull environmental variable from Github
-                  API_URL: ${{ secrets.API_URL }}
-                  PUBLIC_URL: ${{ secrets.PUBLIC_URL }}
+                  API_URL: ${{ secrets.VITE_API_URL }}
+                  PUBLIC_URL: ${{ secrets.VITE_PUBLIC_URL }}
             - name: Publish built code to a branch
               uses: peaceiris/actions-gh-pages@v3
               with:

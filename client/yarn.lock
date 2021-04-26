@@ -2509,12 +2509,12 @@
   dependencies:
     dotenv "^8.2.0"
 
-"@types/dotenv-webpack@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@types/dotenv-webpack/-/dotenv-webpack-7.0.0.tgz#b95acb9708b0eb3448f564db3cb573df4d804316"
-  integrity sha512-qnDX+0z/PQteuPG2mnWcV/WIa7wASit2yg0mC0cZfruX8CjooD5BBsPca4GH2mQYUULmcZiIYMI3m6EsKEj7mw==
+"@types/dotenv-webpack@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@types/dotenv-webpack/-/dotenv-webpack-7.0.1.tgz#f9d5cd7a552b8338bb46f4192772ef6a9c2208ed"
+  integrity sha512-gpKrNjSWcU2NIJJ/BKFvJt80UJ7NrFxhj0nV0MKrbfsWiFKGgSPzrLJ8/aUgMXSmryEadCDjlPpDC5hGglqJnQ==
   dependencies:
-    "@types/webpack" "*"
+    "@types/webpack" "^4"
 
 "@types/eslint-scope@^3.7.0":
   version "3.7.0"
@@ -2851,15 +2851,6 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack@*", "@types/webpack@^5.28.0":
-  version "5.28.0"
-  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-5.28.0.tgz#78dde06212f038d77e54116cfe69e88ae9ed2c03"
-  integrity sha512-8cP0CzcxUiFuA9xGJkfeVpqmWTk9nx6CWwamRGCj95ph1SmlRRk9KlCZ6avhCbZd4L68LvYT6l1kpdEnQXrF8w==
-  dependencies:
-    "@types/node" "*"
-    tapable "^2.2.0"
-    webpack "^5"
-
 "@types/webpack@^4":
   version "4.41.27"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.27.tgz#f47da488c8037e7f1b2dbf2714fbbacb61ec0ffc"
@@ -2871,6 +2862,15 @@
     "@types/uglify-js" "*"
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
+
+"@types/webpack@^5.28.0":
+  version "5.28.0"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-5.28.0.tgz#78dde06212f038d77e54116cfe69e88ae9ed2c03"
+  integrity sha512-8cP0CzcxUiFuA9xGJkfeVpqmWTk9nx6CWwamRGCj95ph1SmlRRk9KlCZ6avhCbZd4L68LvYT6l1kpdEnQXrF8w==
+  dependencies:
+    "@types/node" "*"
+    tapable "^2.2.0"
+    webpack "^5"
 
 "@types/workbox-webpack-plugin@^5.1.6":
   version "5.1.6"

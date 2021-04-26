@@ -40,7 +40,7 @@ export default class App {
         this.#openIDConfig = openIDConfig
         this.#videoDatabaseConfig = videoDatabaseConfig
 
-        this.#app.use(cors({ credentials: true })) //! FIXME: update cors configuration after deployment
+        this.#app.use(cors({ credentials: true }))
     }
 
     public start = async (callBack?: Mocha.Done): Promise<void> => {

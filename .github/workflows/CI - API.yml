@@ -41,7 +41,7 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 1
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v2.3.4
             - name: Fail if run by dependabot
               if: github.actor == 'dependabot[bot]'
               run: exit 1
@@ -58,7 +58,7 @@ jobs:
                 # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v2.3.4
             - name: Fail if run by dependabot
               if: github.actor == 'dependabot[bot]'
               run: exit 1

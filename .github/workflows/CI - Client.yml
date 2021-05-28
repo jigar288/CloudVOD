@@ -32,7 +32,7 @@ jobs:
               run: exit 1
             - name: Cache NPM dependencies
               id: cache
-              uses: actions/cache@v2.1.5
+              uses: actions/cache@v2.1.6
               with:
                   path: |
                     client/node_modules
